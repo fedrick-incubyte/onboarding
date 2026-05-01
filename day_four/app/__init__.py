@@ -1,0 +1,16 @@
+from flask import Flask
+from app.config import config_map
+from app.database import db
+
+def create_app(config_name: str = 'default') -> Flask:
+    flask_app = Flask(__name__)
+    flask_app.config.from_object(config_map[config_name])
+    db.init_app(flask_app)
+    import app.models  # noqa
+    from app.routes.projects import projects_bp
+    from app.routes.tags import tags_bp
+    from app.routes.tasks import tasks_bp
+    flask_app.register_blueprint(projects_bp)
+    flask_app.register_blueprint(tags_bp)
+    flask_app.register_blueprint(tasks_bp)
+    return flask_app
