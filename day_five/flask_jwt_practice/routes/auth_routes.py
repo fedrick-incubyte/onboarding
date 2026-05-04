@@ -1,7 +1,7 @@
 from flask import Blueprint, Response, jsonify
 from flask_pydantic import validate
 
-from constants import ErrorMessages, HttpStatus
+from constants import ACCESS_TOKEN_EXPIRE_MINUTES, ErrorMessages, HttpStatus
 from database import get_db
 from exceptions import EmailAlreadyRegisteredError, InvalidCredentialsError
 from models.user import User
@@ -31,6 +31,10 @@ def login(body: LoginRequest) -> tuple[Response, int]:
             if user is None or not auth_service.verify_password(body.password, user.hashed_password):
                 raise InvalidCredentialsError(ErrorMessages.INVALID_CREDENTIALS)
             token = auth_service.create_access_token(user.id, user.email)
-            return jsonify({"access_token": token}), HttpStatus.OK
+            return jsonify({
+                "access_token": token,
+                "token_type": "bearer",
+                "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            }), HttpStatus.OK
     except InvalidCredentialsError as error:
         return jsonify({"error": str(error)}), HttpStatus.UNAUTHORIZED

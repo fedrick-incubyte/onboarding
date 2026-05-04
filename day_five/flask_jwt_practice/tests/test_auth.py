@@ -78,3 +78,27 @@ def should_return_200_with_access_token_on_valid_login(client):
     response = client.post("/login", json={"email": "user@example.com", "password": "securepass123"})
     assert response.status_code == 200
     assert "access_token" in response.get_json()
+
+
+def should_return_token_type_as_bearer_in_login_response(client):
+    from tests.conftest import register_user
+    register_user(client)
+    body = client.post("/login", json={"email": "user@example.com", "password": "securepass123"}).get_json()
+    assert body["token_type"] == "bearer"
+
+
+def should_return_expires_in_seconds_in_login_response(client):
+    from tests.conftest import register_user
+    register_user(client)
+    body = client.post("/login", json={"email": "user@example.com", "password": "securepass123"}).get_json()
+    assert body["expires_in"] == 1800
+
+
+def should_include_sub_and_email_claims_in_jwt_payload(client):
+    import jwt as pyjwt
+    from tests.conftest import register_user
+    register_user(client)
+    body = client.post("/login", json={"email": "user@example.com", "password": "securepass123"}).get_json()
+    payload = pyjwt.decode(body["access_token"], options={"verify_signature": False})
+    assert "sub" in payload
+    assert payload["email"] == "user@example.com"
