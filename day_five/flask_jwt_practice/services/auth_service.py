@@ -46,3 +46,21 @@ def create_access_token(user_id: int, email: str) -> str:
         "exp": now + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     }
     return jwt.encode(payload, Config.SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+
+def decode_access_token(token: str) -> dict:
+    """
+    Decodes and verifies a JWT using SECRET_KEY and JWT_ALGORITHM.
+    Returns the decoded payload dict on success.
+    Raises TokenExpiredError if the token has expired.
+    Raises InvalidTokenError if the signature is invalid or token is malformed.
+    """
+    from config import Config
+    from exceptions import InvalidTokenError, TokenExpiredError
+
+    try:
+        return jwt.decode(token, Config.SECRET_KEY, algorithms=[JWT_ALGORITHM])
+    except jwt.ExpiredSignatureError:
+        raise TokenExpiredError("Token has expired")
+    except jwt.DecodeError:
+        raise InvalidTokenError("Invalid token")

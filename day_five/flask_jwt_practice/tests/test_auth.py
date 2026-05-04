@@ -128,3 +128,47 @@ def should_return_401_when_no_authorization_header_is_sent_to_protected_route(cl
     response = client.get("/me")
     assert response.status_code == 401
     assert response.get_json()["error"] == "Authorization header missing"
+
+
+# ── Cycle 9 — JWT Middleware Built Incrementally ──────────────────────────────
+
+def should_return_401_when_authorization_header_is_missing_bearer_prefix(client):
+    response = client.get("/me", headers={"Authorization": "Token sometoken"})
+    assert response.status_code == 401
+    assert response.get_json()["error"] == "Token missing"
+
+
+def should_return_401_when_token_signature_has_been_tampered_with(client):
+    register_user(client)
+    token = login_user(client)
+    tampered = token[:-5] + "XXXXX"
+    response = client.get("/me", headers=auth_header(tampered))
+    assert response.status_code == 401
+    assert response.get_json()["error"] == "Invalid token"
+
+
+def should_return_401_when_token_has_expired(client):
+    import jwt as pyjwt
+    from datetime import timedelta, timezone
+    from config import Config
+    from constants import JWT_ALGORITHM
+    register_user(client)
+    payload = {"sub": "1", "email": "user@example.com", "exp": datetime.now(timezone.utc) - timedelta(seconds=1)}
+    expired_token = pyjwt.encode(payload, Config.SECRET_KEY, algorithm=JWT_ALGORITHM)
+    response = client.get("/me", headers=auth_header(expired_token))
+    assert response.status_code == 401
+    assert response.get_json()["error"] == "Token has expired"
+
+
+def should_return_401_when_user_in_token_no_longer_exists_in_database(client):
+    import jwt as pyjwt
+    from config import Config
+    from constants import JWT_ALGORITHM
+    from datetime import timedelta, timezone
+    token = pyjwt.encode(
+        {"sub": "99999", "email": "ghost@example.com", "exp": datetime.now(timezone.utc) + timedelta(minutes=30)},
+        Config.SECRET_KEY, algorithm=JWT_ALGORITHM,
+    )
+    response = client.get("/me", headers=auth_header(token))
+    assert response.status_code == 401
+    assert response.get_json()["error"] == "User not found"
