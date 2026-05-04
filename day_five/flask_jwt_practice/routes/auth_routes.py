@@ -1,11 +1,11 @@
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify
 from flask_pydantic import validate
 
 from constants import HttpStatus
 from database import get_db
-from models.user import User
+from exceptions import EmailAlreadyRegisteredError
 from schemas.auth import RegisterRequest
-from services import auth_service
+from services import user_service
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -13,8 +13,9 @@ auth_blueprint = Blueprint("auth", __name__)
 @auth_blueprint.post("/register")
 @validate()
 def register(body: RegisterRequest) -> tuple[Response, int]:
-    with get_db() as db:
-        user = User(email=body.email, hashed_password=auth_service.hash_password(body.password))
-        db.add(user)
-        db.flush()
-        return jsonify({"message": "User registered successfully", "user_id": user.id}), HttpStatus.CREATED
+    try:
+        with get_db() as db:
+            user = user_service.register_user(body.email, body.password, db)
+            return jsonify({"message": "User registered successfully", "user_id": user.id}), HttpStatus.CREATED
+    except EmailAlreadyRegisteredError as error:
+        return jsonify({"error": str(error)}), HttpStatus.BAD_REQUEST

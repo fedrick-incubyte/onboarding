@@ -59,3 +59,12 @@ def should_return_400_when_password_is_shorter_than_eight_characters(client):
 def should_return_400_when_request_body_fields_are_missing(client):
     response = client.post("/register", json={})
     assert response.status_code == 400
+
+
+# ── Cycle 5 — Duplicate Email ─────────────────────────────────────────────────
+
+def should_return_400_when_email_is_already_registered(client):
+    client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
+    response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
+    assert response.status_code == 400
+    assert response.get_json()["error"] == "Email already registered"
