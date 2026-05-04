@@ -68,3 +68,13 @@ def should_return_400_when_email_is_already_registered(client):
     response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
     assert response.status_code == 400
     assert response.get_json()["error"] == "Email already registered"
+
+
+# ── Cycle 6 — Login Happy Path ────────────────────────────────────────────────
+
+def should_return_200_with_access_token_on_valid_login(client):
+    from tests.conftest import register_user
+    register_user(client)
+    response = client.post("/login", json={"email": "user@example.com", "password": "securepass123"})
+    assert response.status_code == 200
+    assert "access_token" in response.get_json()
