@@ -28,3 +28,17 @@ def should_return_message_and_timestamp_in_public_response(client):
 def should_return_201_when_registering_with_valid_data(client):
     response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
     assert response.status_code == 201
+
+
+def should_return_user_id_in_registration_response(client):
+    response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
+    body = response.get_json()
+    assert "user_id" in body
+    assert isinstance(body["user_id"], int)
+
+
+def should_not_return_password_or_hash_in_registration_response(client):
+    response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
+    body = response.get_json()
+    assert "password" not in body
+    assert "hashed_password" not in body
