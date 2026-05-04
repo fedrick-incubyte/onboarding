@@ -172,3 +172,24 @@ def should_return_401_when_user_in_token_no_longer_exists_in_database(client):
     response = client.get("/me", headers=auth_header(token))
     assert response.status_code == 401
     assert response.get_json()["error"] == "User not found"
+
+
+# ── Cycle 10 — Protected Route Returns Data ───────────────────────────────────
+
+def should_return_200_with_user_email_when_token_is_valid(client):
+    register_user(client)
+    token = login_user(client)
+    response = client.get("/me", headers=auth_header(token))
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body["email"] == "user@example.com"
+    assert "user_id" in body
+    assert "created_at" in body
+
+
+def should_return_data_for_the_authenticated_user_not_any_other_user(client):
+    register_user(client, email="a@example.com", password="securepass123")
+    register_user(client, email="b@example.com", password="securepass123")
+    token = login_user(client, email="b@example.com", password="securepass123")
+    response = client.get("/me", headers=auth_header(token))
+    assert response.get_json()["email"] == "b@example.com"

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from flask import Blueprint, Response, jsonify
+from flask import Blueprint, Response, g, jsonify
 
 from middleware.jwt_middleware import jwt_required
 
@@ -21,4 +21,9 @@ def public() -> tuple[Response, int]:
 @jwt_required
 def me() -> tuple[Response, int]:
     """Protected endpoint — returns the authenticated user's profile."""
-    return jsonify({}), 200
+    user = g.current_user
+    return jsonify({
+        "user_id": user.id,
+        "email": user.email,
+        "created_at": user.created_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }), 200
