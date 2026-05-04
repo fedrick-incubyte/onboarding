@@ -13,3 +13,11 @@ def should_return_404_for_unknown_route(client):
 def should_return_200_for_public_route(client):
     response = client.get("/public")
     assert response.status_code == 200
+
+
+def should_return_message_and_timestamp_in_public_response(client):
+    response = client.get("/public")
+    body = response.get_json()
+    assert "message" in body
+    assert "timestamp" in body
+    datetime.fromisoformat(body["timestamp"].replace("Z", "+00:00"))
