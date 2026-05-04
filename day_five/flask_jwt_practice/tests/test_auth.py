@@ -1,17 +1,18 @@
-import jwt as pyjwt
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
+import jwt as pyjwt
+
+from config import Config
+from constants import JWT_ALGORITHM
 from tests.conftest import auth_header, login_user, register_user
 
 
-# ── Cycle 1 — App Bootstrap ──────────────────────────────────────────────────
 
 def should_return_404_for_unknown_route(client):
     response = client.get("/nonexistent")
     assert response.status_code == 404
 
 
-# ── Cycle 2 — Public Route ───────────────────────────────────────────────────
 
 def should_return_200_for_public_route(client):
     response = client.get("/public")
@@ -26,7 +27,6 @@ def should_return_message_and_timestamp_in_public_response(client):
     datetime.fromisoformat(body["timestamp"].replace("Z", "+00:00"))
 
 
-# ── Cycle 3 — Registration Happy Path ────────────────────────────────────────
 
 def should_return_201_when_registering_with_valid_data(client):
     response = register_user(client)
@@ -45,7 +45,6 @@ def should_not_return_password_or_hash_in_registration_response(client):
     assert "hashed_password" not in body
 
 
-# ── Cycle 4 — Registration Validation ────────────────────────────────────────
 
 def should_return_400_when_email_format_is_invalid(client):
     response = client.post("/register", json={"email": "not-an-email", "password": "securepass123"})
@@ -62,7 +61,6 @@ def should_return_400_when_request_body_fields_are_missing(client):
     assert response.status_code == 400
 
 
-# ── Cycle 5 — Duplicate Email ─────────────────────────────────────────────────
 
 def should_return_400_when_email_is_already_registered(client):
     register_user(client)
@@ -71,7 +69,6 @@ def should_return_400_when_email_is_already_registered(client):
     assert response.get_json()["error"] == "Email already registered"
 
 
-# ── Cycle 6 — Login Happy Path ────────────────────────────────────────────────
 
 def should_return_200_with_access_token_on_valid_login(client):
     register_user(client)
@@ -100,7 +97,6 @@ def should_include_sub_and_email_claims_in_jwt_payload(client):
     assert payload["email"] == "user@example.com"
 
 
-# ── Cycle 7 — Login Failure Cases ────────────────────────────────────────────
 
 def should_return_401_when_email_is_not_registered(client):
     response = client.post("/login", json={"email": "nobody@example.com", "password": "securepass123"})
@@ -122,7 +118,6 @@ def should_return_identical_error_for_wrong_password_and_unknown_email(client):
     assert wrong_email_response.get_json()["error"] == wrong_password_response.get_json()["error"]
 
 
-# ── Cycle 8 — Protected Route Stub ───────────────────────────────────────────
 
 def should_return_401_when_no_authorization_header_is_sent_to_protected_route(client):
     response = client.get("/me")
@@ -130,7 +125,6 @@ def should_return_401_when_no_authorization_header_is_sent_to_protected_route(cl
     assert response.get_json()["error"] == "Authorization header missing"
 
 
-# ── Cycle 9 — JWT Middleware Built Incrementally ──────────────────────────────
 
 def should_return_401_when_authorization_header_is_missing_bearer_prefix(client):
     response = client.get("/me", headers={"Authorization": "Token sometoken"})
@@ -148,10 +142,6 @@ def should_return_401_when_token_signature_has_been_tampered_with(client):
 
 
 def should_return_401_when_token_has_expired(client):
-    import jwt as pyjwt
-    from datetime import timedelta, timezone
-    from config import Config
-    from constants import JWT_ALGORITHM
     register_user(client)
     payload = {"sub": "1", "email": "user@example.com", "exp": datetime.now(timezone.utc) - timedelta(seconds=1)}
     expired_token = pyjwt.encode(payload, Config.SECRET_KEY, algorithm=JWT_ALGORITHM)
@@ -161,10 +151,6 @@ def should_return_401_when_token_has_expired(client):
 
 
 def should_return_401_when_user_in_token_no_longer_exists_in_database(client):
-    import jwt as pyjwt
-    from config import Config
-    from constants import JWT_ALGORITHM
-    from datetime import timedelta, timezone
     token = pyjwt.encode(
         {"sub": "99999", "email": "ghost@example.com", "exp": datetime.now(timezone.utc) + timedelta(minutes=30)},
         Config.SECRET_KEY, algorithm=JWT_ALGORITHM,
@@ -174,7 +160,6 @@ def should_return_401_when_user_in_token_no_longer_exists_in_database(client):
     assert response.get_json()["error"] == "User not found"
 
 
-# ── Cycle 10 — Protected Route Returns Data ───────────────────────────────────
 
 def should_return_200_with_user_email_when_token_is_valid(client):
     register_user(client)
@@ -195,7 +180,6 @@ def should_return_data_for_the_authenticated_user_not_any_other_user(client):
     assert response.get_json()["email"] == "b@example.com"
 
 
-# ── Cycle 11 — Public Route Unchanged by Token ───────────────────────────────
 
 def should_return_200_on_public_route_even_when_a_valid_token_is_sent(client):
     register_user(client)
