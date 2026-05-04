@@ -98,3 +98,25 @@ def should_include_sub_and_email_claims_in_jwt_payload(client):
     payload = pyjwt.decode(body["access_token"], options={"verify_signature": False})
     assert "sub" in payload
     assert payload["email"] == "user@example.com"
+
+
+# ── Cycle 7 — Login Failure Cases ────────────────────────────────────────────
+
+def should_return_401_when_email_is_not_registered(client):
+    response = client.post("/login", json={"email": "nobody@example.com", "password": "securepass123"})
+    assert response.status_code == 401
+    assert response.get_json()["error"] == "Invalid credentials"
+
+
+def should_return_401_when_password_does_not_match(client):
+    register_user(client)
+    response = client.post("/login", json={"email": "user@example.com", "password": "wrongpassword"})
+    assert response.status_code == 401
+    assert response.get_json()["error"] == "Invalid credentials"
+
+
+def should_return_identical_error_for_wrong_password_and_unknown_email(client):
+    register_user(client)
+    wrong_email_response = client.post("/login", json={"email": "nobody@example.com", "password": "securepass123"})
+    wrong_password_response = client.post("/login", json={"email": "user@example.com", "password": "wrongpassword"})
+    assert wrong_email_response.get_json()["error"] == wrong_password_response.get_json()["error"]
