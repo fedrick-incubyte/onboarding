@@ -1,4 +1,7 @@
+import jwt as pyjwt
 from datetime import datetime
+
+from tests.conftest import auth_header, login_user, register_user
 
 
 # ── Cycle 1 — App Bootstrap ──────────────────────────────────────────────────
@@ -26,20 +29,18 @@ def should_return_message_and_timestamp_in_public_response(client):
 # ── Cycle 3 — Registration Happy Path ────────────────────────────────────────
 
 def should_return_201_when_registering_with_valid_data(client):
-    response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
+    response = register_user(client)
     assert response.status_code == 201
 
 
 def should_return_user_id_in_registration_response(client):
-    response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
-    body = response.get_json()
+    body = register_user(client).get_json()
     assert "user_id" in body
     assert isinstance(body["user_id"], int)
 
 
 def should_not_return_password_or_hash_in_registration_response(client):
-    response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
-    body = response.get_json()
+    body = register_user(client).get_json()
     assert "password" not in body
     assert "hashed_password" not in body
 
@@ -64,8 +65,8 @@ def should_return_400_when_request_body_fields_are_missing(client):
 # ── Cycle 5 — Duplicate Email ─────────────────────────────────────────────────
 
 def should_return_400_when_email_is_already_registered(client):
-    client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
-    response = client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
+    register_user(client)
+    response = register_user(client)
     assert response.status_code == 400
     assert response.get_json()["error"] == "Email already registered"
 
@@ -73,7 +74,6 @@ def should_return_400_when_email_is_already_registered(client):
 # ── Cycle 6 — Login Happy Path ────────────────────────────────────────────────
 
 def should_return_200_with_access_token_on_valid_login(client):
-    from tests.conftest import register_user
     register_user(client)
     response = client.post("/login", json={"email": "user@example.com", "password": "securepass123"})
     assert response.status_code == 200
@@ -81,22 +81,18 @@ def should_return_200_with_access_token_on_valid_login(client):
 
 
 def should_return_token_type_as_bearer_in_login_response(client):
-    from tests.conftest import register_user
     register_user(client)
     body = client.post("/login", json={"email": "user@example.com", "password": "securepass123"}).get_json()
     assert body["token_type"] == "bearer"
 
 
 def should_return_expires_in_seconds_in_login_response(client):
-    from tests.conftest import register_user
     register_user(client)
     body = client.post("/login", json={"email": "user@example.com", "password": "securepass123"}).get_json()
     assert body["expires_in"] == 1800
 
 
 def should_include_sub_and_email_claims_in_jwt_payload(client):
-    import jwt as pyjwt
-    from tests.conftest import register_user
     register_user(client)
     body = client.post("/login", json={"email": "user@example.com", "password": "securepass123"}).get_json()
     payload = pyjwt.decode(body["access_token"], options={"verify_signature": False})
