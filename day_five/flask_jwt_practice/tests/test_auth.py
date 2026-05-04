@@ -42,3 +42,20 @@ def should_not_return_password_or_hash_in_registration_response(client):
     body = response.get_json()
     assert "password" not in body
     assert "hashed_password" not in body
+
+
+# ── Cycle 4 — Registration Validation ────────────────────────────────────────
+
+def should_return_400_when_email_format_is_invalid(client):
+    response = client.post("/register", json={"email": "not-an-email", "password": "securepass123"})
+    assert response.status_code == 400
+
+
+def should_return_400_when_password_is_shorter_than_eight_characters(client):
+    response = client.post("/register", json={"email": "user@example.com", "password": "short"})
+    assert response.status_code == 400
+
+
+def should_return_400_when_request_body_fields_are_missing(client):
+    response = client.post("/register", json={})
+    assert response.status_code == 400
