@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from flask import Blueprint, Response, jsonify
 
-from constants import ErrorMessages
+from middleware.jwt_middleware import jwt_required
 
 user_blueprint = Blueprint("user", __name__)
 
@@ -15,3 +15,10 @@ def public() -> tuple[Response, int]:
         "message": "This is a public route. No token needed.",
         "timestamp": timestamp,
     }), 200
+
+
+@user_blueprint.get("/me")
+@jwt_required
+def me() -> tuple[Response, int]:
+    """Protected endpoint — returns the authenticated user's profile."""
+    return jsonify({}), 200

@@ -120,3 +120,11 @@ def should_return_identical_error_for_wrong_password_and_unknown_email(client):
     wrong_email_response = client.post("/login", json={"email": "nobody@example.com", "password": "securepass123"})
     wrong_password_response = client.post("/login", json={"email": "user@example.com", "password": "wrongpassword"})
     assert wrong_email_response.get_json()["error"] == wrong_password_response.get_json()["error"]
+
+
+# ── Cycle 8 — Protected Route Stub ───────────────────────────────────────────
+
+def should_return_401_when_no_authorization_header_is_sent_to_protected_route(client):
+    response = client.get("/me")
+    assert response.status_code == 401
+    assert response.get_json()["error"] == "Authorization header missing"
