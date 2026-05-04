@@ -193,3 +193,13 @@ def should_return_data_for_the_authenticated_user_not_any_other_user(client):
     token = login_user(client, email="b@example.com", password="securepass123")
     response = client.get("/me", headers=auth_header(token))
     assert response.get_json()["email"] == "b@example.com"
+
+
+# ── Cycle 11 — Public Route Unchanged by Token ───────────────────────────────
+
+def should_return_200_on_public_route_even_when_a_valid_token_is_sent(client):
+    register_user(client)
+    token = login_user(client)
+    response = client.get("/public", headers=auth_header(token))
+    assert response.status_code == 200
+    assert "message" in response.get_json()
