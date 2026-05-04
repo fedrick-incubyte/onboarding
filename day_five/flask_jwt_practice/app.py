@@ -1,6 +1,7 @@
 from flask import Flask
 
 from config import Config, TestingConfig
+from routes.auth_routes import auth_blueprint
 from routes.user_routes import user_blueprint
 
 
@@ -15,4 +16,5 @@ def create_app(config: str = "default") -> Flask:
     app = Flask(__name__)
     app.config.from_object(configs.get(config, Config))
     app.register_blueprint(user_blueprint)
+    app.register_blueprint(auth_blueprint)
     return app
