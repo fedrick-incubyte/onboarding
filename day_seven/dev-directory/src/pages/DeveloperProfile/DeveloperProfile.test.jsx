@@ -33,4 +33,9 @@ describe('DeveloperProfile', () => {
     renderAtRoute('/developers/1');
     expect(screen.getByRole('link', { name: /back/i })).toBeInTheDocument();
   });
+
+  it('should show a not found message for an unknown id', () => {
+    renderAtRoute('/developers/999');
+    expect(screen.getByText(/developer not found/i)).toBeInTheDocument();
+  });
 });

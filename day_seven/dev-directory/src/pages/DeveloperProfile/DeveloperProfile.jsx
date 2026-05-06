@@ -6,6 +6,8 @@ export function DeveloperProfile() {
   const { id } = useParams();
   const developer = developers.find((d) => d.id === id);
 
+  if (!developer) return <p>Developer not found</p>;
+
   return (
     <div>
       <h1>{developer.name}</h1>
