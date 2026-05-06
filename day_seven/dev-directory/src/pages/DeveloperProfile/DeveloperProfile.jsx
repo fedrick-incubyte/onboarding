@@ -5,5 +5,10 @@ export function DeveloperProfile() {
   const { id } = useParams();
   const developer = developers.find((d) => d.id === id);
 
-  return <h1>{developer.name}</h1>;
+  return (
+    <div>
+      <h1>{developer.name}</h1>
+      <p>{developer.bio}</p>
+    </div>
+  );
 }

@@ -16,4 +16,9 @@ describe('DeveloperProfile', () => {
     renderAtRoute('/developers/1');
     expect(screen.getByRole('heading', { name: /ada lovelace/i })).toBeInTheDocument();
   });
+
+  it('should render the developer bio', () => {
+    renderAtRoute('/developers/1');
+    expect(screen.getByText(/pioneer of component-based thinking/i)).toBeInTheDocument();
+  });
 });
