@@ -4,8 +4,9 @@ import math
 from typing import Any, Dict, List
 
 from sqlalchemy import asc, desc
+from sqlalchemy.orm import Query
 
-from task_manager.constants import DEFAULT_PAGE_SIZE, SORTABLE_FIELDS
+from task_manager.constants import DEFAULT_PAGE_SIZE
 from task_manager.models import Task, db
 from task_manager.schemas import TaskCreateBody, TaskListQuery
 
@@ -23,18 +24,31 @@ def _build_page_response(
     }
 
 
-def list_tasks(query: TaskListQuery) -> Dict[str, Any]:
-    """Return tasks with offset-limit pagination, filtering, and page metadata."""
-    page_size = query.page_size or DEFAULT_PAGE_SIZE
-    q = Task.query
+def _apply_filters(q: Query, query: TaskListQuery) -> Query:
+    """Apply status and keyword search filters to the query."""
     if query.status:
         q = q.filter(Task.status == query.status)
     if query.search:
         pattern = f"%{query.search}%"
         q = q.filter(Task.title.ilike(pattern) | Task.description.ilike(pattern))
-    if query.sort:
-        sort_col = getattr(Task, query.sort)
-        q = q.order_by(desc(sort_col) if query.order == "desc" else asc(sort_col))
+    return q
+
+
+def _apply_sort(q: Query, query: TaskListQuery) -> Query:
+    """Apply column sort and direction to the query."""
+    if not query.sort:
+        return q
+    sort_col = getattr(Task, query.sort)
+    direction = desc if query.order == "desc" else asc
+    return q.order_by(direction(sort_col))
+
+
+def list_tasks(query: TaskListQuery) -> Dict[str, Any]:
+    """Return tasks with offset-limit pagination, filtering, and page metadata."""
+    page_size = query.page_size or DEFAULT_PAGE_SIZE
+    q = Task.query
+    q = _apply_filters(q, query)
+    q = _apply_sort(q, query)
     total = q.count()
     tasks = q.offset((query.page - 1) * page_size).limit(page_size).all()
     return _build_page_response(tasks, total, query.page, page_size)
