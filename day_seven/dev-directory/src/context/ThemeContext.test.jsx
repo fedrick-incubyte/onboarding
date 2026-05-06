@@ -1,9 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider, useTheme } from './ThemeContext';
 
 function TestConsumer() {
-  const { theme } = useTheme();
-  return <span>{theme}</span>;
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <>
+      <span>{theme}</span>
+      <button onClick={toggleTheme}>Toggle</button>
+    </>
+  );
 }
 
 describe('ThemeContext', () => {
@@ -14,5 +19,15 @@ describe('ThemeContext', () => {
       </ThemeProvider>
     );
     expect(screen.getByText('light')).toBeInTheDocument();
+  });
+
+  it('should toggle the theme from light to dark', () => {
+    render(
+      <ThemeProvider>
+        <TestConsumer />
+      </ThemeProvider>
+    );
+    fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    expect(screen.getByText('dark')).toBeInTheDocument();
   });
 });
