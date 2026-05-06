@@ -3,7 +3,7 @@ export function FilterBar({ skills, onFilterChange }) {
     <div>
       <button>All</button>
       {skills.map((skill) => (
-        <button key={skill}>{skill}</button>
+        <button key={skill} onClick={() => onFilterChange(skill)}>{skill}</button>
       ))}
     </div>
   );
