@@ -4,17 +4,25 @@ from unittest.mock import patch
 from task_manager.workers.notify_task import send_task_notification
 
 
-def should_retry_notification_task_on_transient_failure(app):
+def should_retry_notification_task_on_transient_failure():
+    from unittest.mock import ANY
+    from task_manager.constants import NOTIFICATION_MAX_RETRIES, NOTIFICATION_RETRY_COUNTDOWN
+
+    assert send_task_notification.max_retries == NOTIFICATION_MAX_RETRIES
+
     with patch(
         "task_manager.workers.notify_task.notification_service.log_notification",
         side_effect=Exception("SMTP timeout"),
     ):
-        try:
-            send_task_notification.apply(args=[1, "Deploy", "todo"])
-        except Exception:
-            pass
+        with patch.object(
+            send_task_notification, "retry", side_effect=Exception("retried")
+        ) as mock_retry:
+            try:
+                send_task_notification.apply(args=[1, "Deploy", "todo"])
+            except Exception:
+                pass
 
-    assert send_task_notification.max_retries == 3
+    mock_retry.assert_called_once_with(exc=ANY, countdown=NOTIFICATION_RETRY_COUNTDOWN)
 
 
 def should_log_email_payload_when_notification_task_executes(client, caplog):
