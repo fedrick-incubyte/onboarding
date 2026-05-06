@@ -9,9 +9,14 @@ export function FilterBar({ skills, onFilterChange }) {
     onFilterChange(nextSkill);
   }
 
+  function handleClearFilter() {
+    setActiveSkill(null);
+    onFilterChange(null);
+  }
+
   return (
     <div>
-      <button>All</button>
+      <button onClick={handleClearFilter}>All</button>
       {skills.map((skill) => (
         <button key={skill} onClick={() => handleSkillClick(skill)}>{skill}</button>
       ))}
