@@ -26,5 +26,5 @@ def get_task(task_id: int):
 @validate()
 def create_task(body: TaskCreateBody):
     task = task_service.create_task(body)
-    send_task_notification.delay(task.id)
+    send_task_notification.delay(task.id, task.title, task.status)
     return jsonify(task.to_dict()), 201
