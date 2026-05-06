@@ -20,4 +20,9 @@ describe('DeveloperCard', () => {
     render(<DeveloperCard developer={mockDeveloper} />);
     expect(screen.getByText('Frontend Engineer')).toBeInTheDocument();
   });
+
+  it('should render the developer location', () => {
+    render(<DeveloperCard developer={mockDeveloper} />);
+    expect(screen.getByText('London, UK')).toBeInTheDocument();
+  });
 });

@@ -3,6 +3,7 @@ export function DeveloperCard({ developer }) {
     <article>
       <p>{developer.name}</p>
       <p>{developer.role}</p>
+      <p>{developer.location}</p>
     </article>
   );
 }
