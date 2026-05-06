@@ -25,6 +25,18 @@ def should_return_second_page_with_correct_task_slice(client):
     assert data["page"] == 2
 
 
+def should_return_empty_items_when_page_exceeds_total(client):
+    client.post("/tasks", json={"title": "Only task"})
+
+    response = client.get("/tasks?page=10&page_size=3")
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["items"] == []
+    assert data["total"] == 1
+    assert data["total_pages"] == 1
+
+
 def should_return_all_tasks_as_list(client):
     client.post("/tasks", json={"title": "Task A"})
     client.post("/tasks", json={"title": "Task B"})
