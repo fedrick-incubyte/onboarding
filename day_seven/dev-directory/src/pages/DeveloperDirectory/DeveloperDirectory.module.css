@@ -1,0 +1,15 @@
+.wrapper {
+  padding: 24px 32px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--text);
+  padding: 48px 0;
+}

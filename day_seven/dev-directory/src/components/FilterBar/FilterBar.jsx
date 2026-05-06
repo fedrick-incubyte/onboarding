@@ -1,4 +1,5 @@
 import { useSkillFilter } from '../../hooks/useSkillFilter';
+import styles from './FilterBar.module.css';
 
 export function FilterBar({ skills, onFilterChange }) {
   const { activeSkill, selectSkill, clearFilter } = useSkillFilter();
@@ -14,11 +15,12 @@ export function FilterBar({ skills, onFilterChange }) {
   }
 
   return (
-    <div>
-      <button onClick={handleClearFilter}>All</button>
+    <div className={styles.wrapper}>
+      <button className={styles.button} onClick={handleClearFilter}>All</button>
       {skills.map((skill) => (
         <button
           key={skill}
+          className={styles.button}
           onClick={() => handleSkillClick(skill)}
           aria-pressed={activeSkill === skill}
         >

@@ -1,0 +1,19 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.button {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.button:hover {
+  background: var(--accent-bg);
+}

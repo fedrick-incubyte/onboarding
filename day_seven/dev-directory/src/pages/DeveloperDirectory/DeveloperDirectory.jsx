@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { developers as allDevelopers } from '../../data/developers';
 import { DeveloperCard } from '../../components/DeveloperCard/DeveloperCard';
 import { FilterBar } from '../../components/FilterBar/FilterBar';
+import styles from './DeveloperDirectory.module.css';
 
 export function DeveloperDirectory() {
   const [developers, setDevelopers] = useState([]);
@@ -22,13 +23,17 @@ export function DeveloperDirectory() {
   }
 
   return (
-    <div>
+    <div className={styles.wrapper}>
       <FilterBar skills={uniqueSkills} onFilterChange={handleFilterChange} />
       {visibleDevelopers.length === 0
-        ? <p>No developers found</p>
-        : visibleDevelopers.map((developer) => (
-            <DeveloperCard key={developer.id} developer={developer} />
-          ))
+        ? <p className={styles.empty}>No developers found</p>
+        : (
+          <div className={styles.grid}>
+            {visibleDevelopers.map((developer) => (
+              <DeveloperCard key={developer.id} developer={developer} />
+            ))}
+          </div>
+        )
       }
     </div>
   );
