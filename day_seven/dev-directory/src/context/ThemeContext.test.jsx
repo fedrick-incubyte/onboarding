@@ -45,4 +45,13 @@ describe('ThemeContext', () => {
   it('should throw when useTheme is used outside a ThemeProvider', () => {
     expect(() => render(<TestConsumer />)).toThrow();
   });
+
+  it('should set data-theme attribute on document body', () => {
+    render(
+      <ThemeProvider>
+        <TestConsumer />
+      </ThemeProvider>
+    );
+    expect(document.body.getAttribute('data-theme')).toBe('light');
+  });
 });
