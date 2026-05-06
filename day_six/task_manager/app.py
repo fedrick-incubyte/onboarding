@@ -23,8 +23,18 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
 
     db.init_app(app)
 
+    from task_manager.exceptions import InvalidSortFieldError, TaskNotFoundError
     from task_manager.routes.tasks import tasks_bp
+
     app.register_blueprint(tasks_bp)
+
+    @app.errorhandler(InvalidSortFieldError)
+    def handle_invalid_sort(err: InvalidSortFieldError):
+        return jsonify({"error": str(err)}), 400
+
+    @app.errorhandler(TaskNotFoundError)
+    def handle_task_not_found(err: TaskNotFoundError):
+        return jsonify({"error": str(err)}), 404
 
     with app.app_context():
         db.create_all()

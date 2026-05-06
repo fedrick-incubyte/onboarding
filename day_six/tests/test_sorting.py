@@ -1,6 +1,13 @@
 from datetime import datetime
 
 
+def should_return_400_for_invalid_sort_field(client):
+    response = client.get("/tasks?sort=invalid_field")
+
+    assert response.status_code == 400
+    assert "error" in response.get_json()
+
+
 def should_sort_tasks_by_due_date_descending_when_order_is_desc(client):
     client.post("/tasks", json={"title": "Earlier task", "due_date": "2026-01-01T00:00:00"})
     client.post("/tasks", json={"title": "Later task", "due_date": "2026-06-01T00:00:00"})

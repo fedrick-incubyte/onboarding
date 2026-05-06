@@ -6,7 +6,8 @@ from typing import Any, Dict, List
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import Query
 
-from task_manager.constants import DEFAULT_PAGE_SIZE
+from task_manager.constants import DEFAULT_PAGE_SIZE, SORTABLE_FIELDS
+from task_manager.exceptions import InvalidSortFieldError
 from task_manager.models import Task, db
 from task_manager.schemas import TaskCreateBody, TaskListQuery
 
@@ -38,6 +39,8 @@ def _apply_sort(q: Query, query: TaskListQuery) -> Query:
     """Apply column sort and direction to the query."""
     if not query.sort:
         return q
+    if query.sort not in SORTABLE_FIELDS:
+        raise InvalidSortFieldError(f"'{query.sort}' is not a sortable field. Choose from: {sorted(SORTABLE_FIELDS)}")
     sort_col = getattr(Task, query.sort)
     direction = desc if query.order == "desc" else asc
     return q.order_by(direction(sort_col))
