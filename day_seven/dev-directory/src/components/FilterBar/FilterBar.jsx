@@ -1,16 +1,15 @@
-import { useState } from 'react';
+import { useSkillFilter } from '../../hooks/useSkillFilter';
 
 export function FilterBar({ skills, onFilterChange }) {
-  const [activeSkill, setActiveSkill] = useState(null);
+  const { activeSkill, selectSkill, clearFilter } = useSkillFilter();
 
   function handleSkillClick(skill) {
-    const nextSkill = activeSkill === skill ? null : skill;
-    setActiveSkill(nextSkill);
-    onFilterChange(nextSkill);
+    selectSkill(skill);
+    onFilterChange(activeSkill === skill ? null : skill);
   }
 
   function handleClearFilter() {
-    setActiveSkill(null);
+    clearFilter();
     onFilterChange(null);
   }
 
