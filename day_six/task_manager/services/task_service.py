@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import math
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from task_manager.constants import DEFAULT_PAGE_SIZE
 from task_manager.models import Task, db
-from task_manager.schemas import TaskCreateBody
+from task_manager.schemas import TaskCreateBody, TaskListQuery
 
 
 def _build_page_response(
@@ -21,38 +21,31 @@ def _build_page_response(
     }
 
 
-def list_tasks(
-    page: int = 1,
-    page_size: Optional[int] = None,
-    status: Optional[str] = None,
-    search: Optional[str] = None,
-) -> Dict[str, Any]:
-    """Return tasks with offset-limit pagination and page metadata."""
-    effective_size = page_size or DEFAULT_PAGE_SIZE
-    query = Task.query
-    if status:
-        query = query.filter(Task.status == status)
-    if search:
-        pattern = f"%{search}%"
-        query = query.filter(
-            Task.title.ilike(pattern) | Task.description.ilike(pattern)
-        )
-    total = query.count()
-    tasks = query.offset((page - 1) * effective_size).limit(effective_size).all()
-    return _build_page_response(tasks, total, page, effective_size)
+def list_tasks(query: TaskListQuery) -> Dict[str, Any]:
+    """Return tasks with offset-limit pagination, filtering, and page metadata."""
+    page_size = query.page_size or DEFAULT_PAGE_SIZE
+    q = Task.query
+    if query.status:
+        q = q.filter(Task.status == query.status)
+    if query.search:
+        pattern = f"%{query.search}%"
+        q = q.filter(Task.title.ilike(pattern) | Task.description.ilike(pattern))
+    total = q.count()
+    tasks = q.offset((query.page - 1) * page_size).limit(page_size).all()
+    return _build_page_response(tasks, total, query.page, page_size)
 
 
-def list_tasks_by_cursor(cursor_id: int, page_size: Optional[int] = None) -> Dict[str, Any]:
+def list_tasks_by_cursor(query: TaskListQuery) -> Dict[str, Any]:
     """Return tasks with id > cursor_id; avoids COUNT(*) for large tables."""
-    effective_size = page_size or DEFAULT_PAGE_SIZE
+    page_size = query.page_size or DEFAULT_PAGE_SIZE
     tasks = (
-        Task.query.filter(Task.id > cursor_id)
+        Task.query.filter(Task.id > query.cursor_id)
         .order_by(Task.id)
-        .limit(effective_size + 1)
+        .limit(page_size + 1)
         .all()
     )
-    has_more = len(tasks) > effective_size
-    page_tasks = tasks[:effective_size]
+    has_more = len(tasks) > page_size
+    page_tasks = tasks[:page_size]
     return {
         "items": [t.to_dict() for t in page_tasks],
         "next_cursor": page_tasks[-1].id if page_tasks else None,
