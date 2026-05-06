@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { DeveloperDirectory } from './DeveloperDirectory';
 
@@ -11,5 +11,14 @@ describe('DeveloperDirectory', () => {
     expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
     expect(screen.getByText('Linus Torvalds')).toBeInTheDocument();
     expect(screen.getByText('Margaret Hamilton')).toBeInTheDocument();
+  });
+
+  it('should filter developers when a skill is selected', () => {
+    renderWithRouter(<DeveloperDirectory />);
+    fireEvent.click(screen.getByRole('button', { name: 'Node.js' }));
+    expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
+    expect(screen.getByText('Linus Torvalds')).toBeInTheDocument();
+    expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument();
+    expect(screen.queryByText('Margaret Hamilton')).not.toBeInTheDocument();
   });
 });
