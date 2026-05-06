@@ -29,6 +29,24 @@ def list_tasks(page: int = 1, page_size: Optional[int] = None) -> Dict[str, Any]
     return _build_page_response(tasks, total, page, effective_size)
 
 
+def list_tasks_by_cursor(cursor_id: int, page_size: Optional[int] = None) -> Dict[str, Any]:
+    """Return tasks with id > cursor_id; avoids COUNT(*) for large tables."""
+    effective_size = page_size or DEFAULT_PAGE_SIZE
+    tasks = (
+        Task.query.filter(Task.id > cursor_id)
+        .order_by(Task.id)
+        .limit(effective_size + 1)
+        .all()
+    )
+    has_more = len(tasks) > effective_size
+    page_tasks = tasks[:effective_size]
+    return {
+        "items": [t.to_dict() for t in page_tasks],
+        "next_cursor": page_tasks[-1].id if page_tasks else None,
+        "has_more": has_more,
+    }
+
+
 def create_task(data: TaskCreateBody) -> Task:
     """Persist a new task and return the saved instance."""
     task = Task(

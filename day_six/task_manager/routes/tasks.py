@@ -9,8 +9,11 @@ tasks_bp = Blueprint("tasks", __name__)
 
 @tasks_bp.get("/tasks")
 def list_tasks():
-    page = request.args.get("page", 1, type=int)
+    cursor_id = request.args.get("cursor_id", type=int)
     page_size = request.args.get("page_size", None, type=int)
+    if cursor_id is not None:
+        return jsonify(task_service.list_tasks_by_cursor(cursor_id=cursor_id, page_size=page_size))
+    page = request.args.get("page", 1, type=int)
     return jsonify(task_service.list_tasks(page=page, page_size=page_size))
 
 
