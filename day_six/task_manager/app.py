@@ -17,6 +17,7 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///tasks.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["FLASK_PYDANTIC_VALIDATION_ERROR_STATUS_CODE"] = 422
 
     if test_config:
         app.config.update(test_config)
