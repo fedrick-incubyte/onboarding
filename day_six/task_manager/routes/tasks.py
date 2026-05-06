@@ -3,6 +3,7 @@ from flask_pydantic import validate
 
 from task_manager.schemas import TaskCreateBody, TaskListQuery
 from task_manager.services import task_service
+from task_manager.workers.notify_task import send_task_notification
 
 tasks_bp = Blueprint("tasks", __name__)
 
@@ -25,4 +26,5 @@ def get_task(task_id: int):
 @validate()
 def create_task(body: TaskCreateBody):
     task = task_service.create_task(body)
+    send_task_notification.delay(task.id)
     return jsonify(task.to_dict()), 201
