@@ -21,4 +21,11 @@ describe('DeveloperProfile', () => {
     renderAtRoute('/developers/1');
     expect(screen.getByText(/pioneer of component-based thinking/i)).toBeInTheDocument();
   });
+
+  it('should render all skills as badges', () => {
+    renderAtRoute('/developers/1');
+    expect(screen.getByText('React')).toBeInTheDocument();
+    expect(screen.getByText('JavaScript')).toBeInTheDocument();
+    expect(screen.getByText('CSS')).toBeInTheDocument();
+  });
 });
