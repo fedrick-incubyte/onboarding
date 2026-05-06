@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { Home } from './Home';
 
 describe('Home', () => {
-  it('should render without crashing', () => {
+  it('should render a welcome heading', () => {
     render(<Home />);
-    expect(document.body).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /devdirectory/i })).toBeInTheDocument();
   });
 });
