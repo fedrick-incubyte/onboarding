@@ -15,4 +15,9 @@ describe('DeveloperCard', () => {
     render(<DeveloperCard developer={mockDeveloper} />);
     expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
   });
+
+  it('should render the developer role', () => {
+    render(<DeveloperCard developer={mockDeveloper} />);
+    expect(screen.getByText('Frontend Engineer')).toBeInTheDocument();
+  });
 });

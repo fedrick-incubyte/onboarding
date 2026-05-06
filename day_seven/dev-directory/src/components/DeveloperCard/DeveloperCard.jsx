@@ -1,3 +1,8 @@
 export function DeveloperCard({ developer }) {
-  return <article>{developer.name}</article>;
+  return (
+    <article>
+      <p>{developer.name}</p>
+      <p>{developer.role}</p>
+    </article>
+  );
 }
