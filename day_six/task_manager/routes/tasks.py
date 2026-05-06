@@ -14,7 +14,8 @@ def list_tasks():
     if cursor_id is not None:
         return jsonify(task_service.list_tasks_by_cursor(cursor_id=cursor_id, page_size=page_size))
     page = request.args.get("page", 1, type=int)
-    return jsonify(task_service.list_tasks(page=page, page_size=page_size))
+    status = request.args.get("status")
+    return jsonify(task_service.list_tasks(page=page, page_size=page_size, status=status))
 
 
 @tasks_bp.post("/tasks")

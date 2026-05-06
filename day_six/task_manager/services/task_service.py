@@ -21,11 +21,18 @@ def _build_page_response(
     }
 
 
-def list_tasks(page: int = 1, page_size: Optional[int] = None) -> Dict[str, Any]:
+def list_tasks(
+    page: int = 1,
+    page_size: Optional[int] = None,
+    status: Optional[str] = None,
+) -> Dict[str, Any]:
     """Return tasks with offset-limit pagination and page metadata."""
     effective_size = page_size or DEFAULT_PAGE_SIZE
-    total = Task.query.count()
-    tasks = Task.query.offset((page - 1) * effective_size).limit(effective_size).all()
+    query = Task.query
+    if status:
+        query = query.filter(Task.status == status)
+    total = query.count()
+    tasks = query.offset((page - 1) * effective_size).limit(effective_size).all()
     return _build_page_response(tasks, total, page, effective_size)
 
 
