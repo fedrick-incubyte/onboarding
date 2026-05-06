@@ -15,7 +15,8 @@ def list_tasks():
         return jsonify(task_service.list_tasks_by_cursor(cursor_id=cursor_id, page_size=page_size))
     page = request.args.get("page", 1, type=int)
     status = request.args.get("status")
-    return jsonify(task_service.list_tasks(page=page, page_size=page_size, status=status))
+    search = request.args.get("search")
+    return jsonify(task_service.list_tasks(page=page, page_size=page_size, status=status, search=search))
 
 
 @tasks_bp.post("/tasks")
