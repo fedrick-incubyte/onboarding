@@ -7,4 +7,13 @@ describe('App', () => {
     render(<MemoryRouter><App /></MemoryRouter>);
     expect(screen.getByRole('navigation')).toBeInTheDocument();
   });
+
+  it('should render the Home page at /', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(screen.getByRole('heading', { name: /devdirectory/i })).toBeInTheDocument();
+  });
 });
