@@ -3,7 +3,9 @@ from __future__ import annotations
 import math
 from typing import Any, Dict, List
 
-from task_manager.constants import DEFAULT_PAGE_SIZE
+from sqlalchemy import asc, desc
+
+from task_manager.constants import DEFAULT_PAGE_SIZE, SORTABLE_FIELDS
 from task_manager.models import Task, db
 from task_manager.schemas import TaskCreateBody, TaskListQuery
 
@@ -30,6 +32,9 @@ def list_tasks(query: TaskListQuery) -> Dict[str, Any]:
     if query.search:
         pattern = f"%{query.search}%"
         q = q.filter(Task.title.ilike(pattern) | Task.description.ilike(pattern))
+    if query.sort:
+        sort_col = getattr(Task, query.sort)
+        q = q.order_by(desc(sort_col) if query.order == "desc" else asc(sort_col))
     total = q.count()
     tasks = q.offset((query.page - 1) * page_size).limit(page_size).all()
     return _build_page_response(tasks, total, query.page, page_size)
