@@ -38,4 +38,11 @@ describe('FilterBar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'All' }));
     expect(handleFilterChange).toHaveBeenLastCalledWith(null);
   });
+
+  it('should mark the active skill button with aria-pressed true', () => {
+    render(<FilterBar skills={skills} onFilterChange={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: 'React' }));
+    expect(screen.getByRole('button', { name: 'React' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Node.js' })).toHaveAttribute('aria-pressed', 'false');
+  });
 });

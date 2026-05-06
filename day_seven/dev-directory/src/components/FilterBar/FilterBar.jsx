@@ -18,7 +18,13 @@ export function FilterBar({ skills, onFilterChange }) {
     <div>
       <button onClick={handleClearFilter}>All</button>
       {skills.map((skill) => (
-        <button key={skill} onClick={() => handleSkillClick(skill)}>{skill}</button>
+        <button
+          key={skill}
+          onClick={() => handleSkillClick(skill)}
+          aria-pressed={activeSkill === skill}
+        >
+          {skill}
+        </button>
       ))}
     </div>
   );
