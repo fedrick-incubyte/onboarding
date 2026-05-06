@@ -25,4 +25,10 @@ describe('DeveloperCard', () => {
     render(<DeveloperCard developer={mockDeveloper} />);
     expect(screen.getByText('London, UK')).toBeInTheDocument();
   });
+
+  it('should render a badge for each skill', () => {
+    render(<DeveloperCard developer={mockDeveloper} />);
+    expect(screen.getByText('React')).toBeInTheDocument();
+    expect(screen.getByText('JavaScript')).toBeInTheDocument();
+  });
 });
