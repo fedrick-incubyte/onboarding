@@ -28,4 +28,9 @@ describe('DeveloperProfile', () => {
     expect(screen.getByText('JavaScript')).toBeInTheDocument();
     expect(screen.getByText('CSS')).toBeInTheDocument();
   });
+
+  it('should render a back link to the developer directory', () => {
+    renderAtRoute('/developers/1');
+    expect(screen.getByRole('link', { name: /back/i })).toBeInTheDocument();
+  });
 });

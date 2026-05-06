@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { developers } from '../../data/developers';
 import { Badge } from '../../components/Badge/Badge';
 
@@ -15,6 +15,7 @@ export function DeveloperProfile() {
           <li key={skill}><Badge label={skill} /></li>
         ))}
       </ul>
+      <Link to="/developers">Back to Directory</Link>
     </div>
   );
 }
