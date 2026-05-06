@@ -1,0 +1,38 @@
+export const developers = [
+  {
+    id: '1',
+    name: 'Ada Lovelace',
+    role: 'Frontend Engineer',
+    skills: ['React', 'JavaScript', 'CSS'],
+    bio: 'Pioneer of component-based thinking.',
+    location: 'London, UK',
+    avatar: 'https://i.pravatar.cc/150?img=1',
+  },
+  {
+    id: '2',
+    name: 'Grace Hopper',
+    role: 'Full Stack Engineer',
+    skills: ['React', 'Node.js', 'SQL'],
+    bio: 'Compiler of great user experiences.',
+    location: 'New York, US',
+    avatar: 'https://i.pravatar.cc/150?img=5',
+  },
+  {
+    id: '3',
+    name: 'Linus Torvalds',
+    role: 'Backend Engineer',
+    skills: ['Node.js', 'Linux', 'C'],
+    bio: 'Believes in open source everything.',
+    location: 'Portland, US',
+    avatar: 'https://i.pravatar.cc/150?img=8',
+  },
+  {
+    id: '4',
+    name: 'Margaret Hamilton',
+    role: 'Software Architect',
+    skills: ['React', 'TypeScript', 'Systems Design'],
+    bio: "Coined the term 'software engineering'.",
+    location: 'Boston, US',
+    avatar: 'https://i.pravatar.cc/150?img=9',
+  },
+];
