@@ -41,4 +41,8 @@ describe('ThemeContext', () => {
     fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
     expect(screen.getByText('light')).toBeInTheDocument();
   });
+
+  it('should throw when useTheme is used outside a ThemeProvider', () => {
+    expect(() => render(<TestConsumer />)).toThrow();
+  });
 });
