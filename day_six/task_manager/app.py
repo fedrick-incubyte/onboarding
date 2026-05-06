@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any
+from typing import Any, Dict, Optional
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify
@@ -11,7 +11,7 @@ from task_manager.models import db
 load_dotenv()
 
 
-def create_app(test_config: dict[str, Any] | None = None) -> Flask:
+def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
     """Create and configure the Flask application."""
     app = Flask(__name__)
 
