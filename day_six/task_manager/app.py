@@ -23,6 +23,9 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
 
     db.init_app(app)
 
+    from task_manager.routes.tasks import tasks_bp
+    app.register_blueprint(tasks_bp)
+
     with app.app_context():
         db.create_all()
 
