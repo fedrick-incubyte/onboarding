@@ -31,4 +31,5 @@ describe('DeveloperDirectory', () => {
     expect(screen.getByText('Linus Torvalds')).toBeInTheDocument();
     expect(screen.getByText('Margaret Hamilton')).toBeInTheDocument();
   });
+
 });

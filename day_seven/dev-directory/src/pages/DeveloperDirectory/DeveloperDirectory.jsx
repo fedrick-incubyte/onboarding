@@ -24,9 +24,12 @@ export function DeveloperDirectory() {
   return (
     <div>
       <FilterBar skills={uniqueSkills} onFilterChange={handleFilterChange} />
-      {visibleDevelopers.map((developer) => (
-        <DeveloperCard key={developer.id} developer={developer} />
-      ))}
+      {visibleDevelopers.length === 0
+        ? <p>No developers found</p>
+        : visibleDevelopers.map((developer) => (
+            <DeveloperCard key={developer.id} developer={developer} />
+          ))
+      }
     </div>
   );
 }
