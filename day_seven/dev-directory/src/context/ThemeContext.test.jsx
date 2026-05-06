@@ -54,4 +54,14 @@ describe('ThemeContext', () => {
     );
     expect(document.body.getAttribute('data-theme')).toBe('light');
   });
+
+  it('should update data-theme on document body when theme toggles', () => {
+    render(
+      <ThemeProvider>
+        <TestConsumer />
+      </ThemeProvider>
+    );
+    fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    expect(document.body.getAttribute('data-theme')).toBe('dark');
+  });
 });
