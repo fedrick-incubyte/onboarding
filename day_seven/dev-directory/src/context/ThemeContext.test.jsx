@@ -30,4 +30,15 @@ describe('ThemeContext', () => {
     fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
     expect(screen.getByText('dark')).toBeInTheDocument();
   });
+
+  it('should toggle the theme back to light on a second click', () => {
+    render(
+      <ThemeProvider>
+        <TestConsumer />
+      </ThemeProvider>
+    );
+    fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    expect(screen.getByText('light')).toBeInTheDocument();
+  });
 });
