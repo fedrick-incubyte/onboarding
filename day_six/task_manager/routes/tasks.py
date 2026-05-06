@@ -7,6 +7,11 @@ from task_manager.services import task_service
 tasks_bp = Blueprint("tasks", __name__)
 
 
+@tasks_bp.get("/tasks")
+def list_tasks():
+    return jsonify(task_service.list_tasks())
+
+
 @tasks_bp.post("/tasks")
 @validate()
 def create_task(body: TaskCreateBody):
