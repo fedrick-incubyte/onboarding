@@ -12,8 +12,8 @@ const renderAtRoute = (path) =>
   );
 
 describe('DeveloperProfile', () => {
-  it('should render without crashing', () => {
+  it('should render the developer name from the URL param', () => {
     renderAtRoute('/developers/1');
-    expect(document.body).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /ada lovelace/i })).toBeInTheDocument();
   });
 });
