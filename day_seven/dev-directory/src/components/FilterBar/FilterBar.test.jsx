@@ -22,4 +22,12 @@ describe('FilterBar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'React' }));
     expect(handleFilterChange).toHaveBeenCalledWith('React');
   });
+
+  it('should call onFilterChange with null when the active skill is clicked again', () => {
+    const handleFilterChange = vi.fn();
+    render(<FilterBar skills={skills} onFilterChange={handleFilterChange} />);
+    fireEvent.click(screen.getByRole('button', { name: 'React' }));
+    fireEvent.click(screen.getByRole('button', { name: 'React' }));
+    expect(handleFilterChange).toHaveBeenLastCalledWith(null);
+  });
 });
