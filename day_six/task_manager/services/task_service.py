@@ -7,7 +7,7 @@ from sqlalchemy import asc, desc
 from sqlalchemy.orm import Query
 
 from task_manager.constants import DEFAULT_PAGE_SIZE, SORTABLE_FIELDS
-from task_manager.exceptions import InvalidSortFieldError
+from task_manager.exceptions import InvalidSortFieldError, TaskNotFoundError
 from task_manager.models import Task, db
 from task_manager.schemas import TaskCreateBody, TaskListQuery
 
@@ -85,6 +85,14 @@ def list_tasks_by_cursor(query: TaskListQuery) -> Dict[str, Any]:
     )
     has_more = len(tasks) > page_size
     return _build_cursor_response(tasks[:page_size], has_more)
+
+
+def get_task(task_id: int) -> Task:
+    """Return a single task by id, raising TaskNotFoundError if absent."""
+    task = db.session.get(Task, task_id)
+    if task is None:
+        raise TaskNotFoundError(f"Task {task_id} not found")
+    return task
 
 
 def create_task(data: TaskCreateBody) -> Task:

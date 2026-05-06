@@ -15,6 +15,12 @@ def list_tasks(query: TaskListQuery):
     return jsonify(task_service.list_tasks(query))
 
 
+@tasks_bp.get("/tasks/<int:task_id>")
+def get_task(task_id: int):
+    task = task_service.get_task(task_id)
+    return jsonify(task.to_dict())
+
+
 @tasks_bp.post("/tasks")
 @validate()
 def create_task(body: TaskCreateBody):
