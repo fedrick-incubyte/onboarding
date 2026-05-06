@@ -31,4 +31,9 @@ describe('DeveloperCard', () => {
     expect(screen.getByText('React')).toBeInTheDocument();
     expect(screen.getByText('JavaScript')).toBeInTheDocument();
   });
+
+  it('should render the developer avatar with the developer name as alt text', () => {
+    render(<DeveloperCard developer={mockDeveloper} />);
+    expect(screen.getByRole('img', { name: 'Ada Lovelace' })).toBeInTheDocument();
+  });
 });
