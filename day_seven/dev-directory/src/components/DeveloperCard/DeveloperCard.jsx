@@ -1,10 +1,13 @@
+import { Link } from 'react-router-dom';
 import { Badge } from '../Badge/Badge';
 
 export function DeveloperCard({ developer }) {
   return (
     <article>
-      <img src={developer.avatar} alt={developer.name} />
-      <p>{developer.name}</p>
+      <Link to={`/developers/${developer.id}`}>
+        <img src={developer.avatar} alt={developer.name} />
+        <p>{developer.name}</p>
+      </Link>
       <p>{developer.role}</p>
       <p>{developer.location}</p>
       <ul>
