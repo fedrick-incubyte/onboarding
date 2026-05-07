@@ -8,4 +8,15 @@ describe('TagFilter', () => {
     render(<TagFilter entries={[]} onTagSelect={() => {}} />)
     expect(screen.getByText('All')).toBeInTheDocument()
   })
+
+  it('should render one badge for each unique tag in entries', () => {
+    const entries = [
+      { tags: ['react', 'js'] },
+      { tags: ['react', 'css'] },
+    ]
+    render(<TagFilter entries={entries} onTagSelect={() => {}} />)
+    expect(screen.getByText('react')).toBeInTheDocument()
+    expect(screen.getByText('js')).toBeInTheDocument()
+    expect(screen.getByText('css')).toBeInTheDocument()
+  })
 })
