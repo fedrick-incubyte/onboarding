@@ -7,4 +7,9 @@ describe('Card', () => {
     render(<Card>Hello Card</Card>)
     expect(screen.getByText('Hello Card')).toBeInTheDocument()
   })
+
+  it('should render Card.Header children', () => {
+    render(<Card.Header>Header content</Card.Header>)
+    expect(screen.getByText('Header content')).toBeInTheDocument()
+  })
 })
