@@ -13,4 +13,16 @@ describe('EntryForm', () => {
     render(<EntryForm onSubmit={() => {}} />)
     expect(screen.getByRole('button', { name: /add/i })).toBeInTheDocument()
   })
+
+  it('should call onSubmit with the entry when submitted', async () => {
+    const onSubmit = vi.fn()
+    render(<EntryForm onSubmit={onSubmit} />)
+    await userEvent.type(screen.getByPlaceholderText('Title'), 'My title')
+    await userEvent.type(screen.getByPlaceholderText('Body'), 'My body')
+    await userEvent.click(screen.getByRole('button', { name: /add/i }))
+    expect(onSubmit).toHaveBeenCalledOnce()
+    const entry = onSubmit.mock.calls[0][0]
+    expect(entry.title).toBe('My title')
+    expect(entry.body).toBe('My body')
+  })
 })
