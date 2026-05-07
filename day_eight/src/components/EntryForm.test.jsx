@@ -25,4 +25,12 @@ describe('EntryForm', () => {
     expect(entry.title).toBe('My title')
     expect(entry.body).toBe('My body')
   })
+
+  it('should clear the title field after a successful submission', async () => {
+    render(<EntryForm onSubmit={() => {}} />)
+    await userEvent.type(screen.getByPlaceholderText('Title'), 'Some title')
+    await userEvent.type(screen.getByPlaceholderText('Body'), 'Some body')
+    await userEvent.click(screen.getByRole('button', { name: /add/i }))
+    expect(screen.getByPlaceholderText('Title')).toHaveValue('')
+  })
 })
