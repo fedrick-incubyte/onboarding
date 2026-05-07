@@ -12,4 +12,10 @@ describe('useDarkMode', () => {
     const { result } = renderHook(() => useDarkMode())
     expect(result.current[0]).toBe(false)
   })
+
+  it('should add the dark class to documentElement when darkMode is true', () => {
+    const { result } = renderHook(() => useDarkMode())
+    act(() => result.current[1]())
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
+  })
 })
