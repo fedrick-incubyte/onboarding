@@ -22,4 +22,10 @@ describe('useLocalStorage', () => {
     const { result } = renderHook(() => useLocalStorage('test-key', 'default'))
     expect(result.current[0]).toBe('default')
   })
+
+  it('should write to localStorage when the value changes', () => {
+    const { result } = renderHook(() => useLocalStorage('test-key', 'default'))
+    act(() => result.current[1]('new-value'))
+    expect(localStorageMock.getItem('test-key')).toBe(JSON.stringify('new-value'))
+  })
 })
