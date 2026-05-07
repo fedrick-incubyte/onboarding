@@ -1,3 +1,14 @@
+import { useState } from 'react'
+import { EntryForm } from './components/EntryForm.jsx'
+import { EntryGrid } from './components/EntryGrid.jsx'
+
 export default function App() {
-  return <h1 className="text-3xl font-bold text-brand-500">Hello</h1>
+  const [entries, setEntries] = useState([])
+
+  return (
+    <div>
+      <EntryForm onSubmit={entry => setEntries(prev => [entry, ...prev])} />
+      <EntryGrid entries={entries} />
+    </div>
+  )
 }
