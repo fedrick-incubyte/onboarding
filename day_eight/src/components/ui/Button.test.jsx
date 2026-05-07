@@ -15,4 +15,11 @@ describe('Button', () => {
     await userEvent.click(screen.getByText('Click me'))
     expect(onClick).toHaveBeenCalledOnce()
   })
+
+  it('should not call onClick when disabled', async () => {
+    const onClick = vi.fn()
+    render(<Button onClick={onClick} disabled>Click me</Button>)
+    await userEvent.click(screen.getByText('Click me'))
+    expect(onClick).not.toHaveBeenCalled()
+  })
 })
