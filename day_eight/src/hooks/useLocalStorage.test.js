@@ -28,4 +28,10 @@ describe('useLocalStorage', () => {
     act(() => result.current[1]('new-value'))
     expect(localStorageMock.getItem('test-key')).toBe(JSON.stringify('new-value'))
   })
+
+  it('should read an existing value from localStorage on mount', () => {
+    localStorageMock.setItem('test-key', JSON.stringify('stored-value'))
+    const { result } = renderHook(() => useLocalStorage('test-key', 'default'))
+    expect(result.current[0]).toBe('stored-value')
+  })
 })
