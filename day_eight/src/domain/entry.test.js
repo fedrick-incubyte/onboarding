@@ -16,4 +16,8 @@ describe('createEntry', () => {
     const b = createEntry('Title B', 'Body B', [])
     expect(a.id).not.toBe(b.id)
   })
+
+  it('should throw when title is empty', () => {
+    expect(() => createEntry('', 'Some body', [])).toThrow('Title is required')
+  })
 })
