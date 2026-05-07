@@ -20,4 +20,9 @@ describe('createEntry', () => {
   it('should throw when title is empty', () => {
     expect(() => createEntry('', 'Some body', [])).toThrow('Title is required')
   })
+
+  it('should throw when title exceeds 100 characters', () => {
+    const longTitle = 'a'.repeat(101)
+    expect(() => createEntry(longTitle, 'Some body', [])).toThrow('Title too long')
+  })
 })
