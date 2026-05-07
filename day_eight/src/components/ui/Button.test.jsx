@@ -8,4 +8,11 @@ describe('Button', () => {
     render(<Button>Click me</Button>)
     expect(screen.getByText('Click me')).toBeInTheDocument()
   })
+
+  it('should call onClick when clicked', async () => {
+    const onClick = vi.fn()
+    render(<Button onClick={onClick}>Click me</Button>)
+    await userEvent.click(screen.getByText('Click me'))
+    expect(onClick).toHaveBeenCalledOnce()
+  })
 })
