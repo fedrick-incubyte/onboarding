@@ -10,4 +10,10 @@ describe('createEntry', () => {
     expect(entry).toHaveProperty('tags')
     expect(entry).toHaveProperty('createdAt')
   })
+
+  it('should give each entry a unique id', () => {
+    const a = createEntry('Title A', 'Body A', [])
+    const b = createEntry('Title B', 'Body B', [])
+    expect(a.id).not.toBe(b.id)
+  })
 })
