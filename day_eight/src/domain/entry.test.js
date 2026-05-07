@@ -25,4 +25,8 @@ describe('createEntry', () => {
     const longTitle = 'a'.repeat(101)
     expect(() => createEntry(longTitle, 'Some body', [])).toThrow('Title too long')
   })
+
+  it('should throw when body is empty', () => {
+    expect(() => createEntry('Some title', '', [])).toThrow('Body is required')
+  })
 })
