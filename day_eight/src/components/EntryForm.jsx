@@ -1,3 +1,8 @@
 export function EntryForm() {
-  return <input placeholder="Title" />
+  return (
+    <>
+      <input placeholder="Title" />
+      <button>Add</button>
+    </>
+  )
 }
