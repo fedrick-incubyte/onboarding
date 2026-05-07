@@ -1,7 +1,11 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { render, screen, unmountComponentAtNode } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App.jsx'
+
+beforeEach(() => {
+  localStorage.clear()
+})
 
 describe('App', () => {
   it('should show a submitted entry in the grid', async () => {
@@ -24,5 +28,15 @@ describe('App', () => {
     await userEvent.click(screen.getByText('react'))
     expect(screen.getByText('React entry')).toBeInTheDocument()
     expect(screen.queryByText('Other entry')).not.toBeInTheDocument()
+  })
+
+  it('should persist entries across remounts', async () => {
+    const { unmount } = render(<App />)
+    await userEvent.type(screen.getByPlaceholderText('Title'), 'Persisted entry')
+    await userEvent.type(screen.getByPlaceholderText('Body'), 'body')
+    await userEvent.click(screen.getByText('Add'))
+    unmount()
+    render(<App />)
+    expect(screen.getByText('Persisted entry')).toBeInTheDocument()
   })
 })
