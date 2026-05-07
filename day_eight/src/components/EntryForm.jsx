@@ -7,6 +7,8 @@ export function EntryForm({ onSubmit }) {
 
   function handleSubmit() {
     onSubmit(createEntry(title, body, []))
+    setTitle('')
+    setBody('')
   }
 
   return (
