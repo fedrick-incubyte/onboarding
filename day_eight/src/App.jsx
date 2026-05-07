@@ -3,9 +3,10 @@ import { EntryForm } from './components/EntryForm.jsx'
 import { EntryGrid } from './components/EntryGrid.jsx'
 import { TagFilter } from './components/TagFilter.jsx'
 import { filterEntries } from './domain/filter.js'
+import { useLocalStorage } from './hooks/useLocalStorage.js'
 
 export default function App() {
-  const [entries, setEntries] = useState([])
+  const [entries, setEntries] = useLocalStorage('craftlog-entries', [])
   const [activeTag, setActiveTag] = useState(null)
 
   return (
