@@ -15,4 +15,10 @@ describe('EntryCard', () => {
     render(<EntryCard entry={entry} />)
     expect(screen.getByText('My Learning')).toBeInTheDocument()
   })
+
+  it('should render each tag as a Badge', () => {
+    render(<EntryCard entry={entry} />)
+    expect(screen.getByText('tdd')).toBeInTheDocument()
+    expect(screen.getByText('react')).toBeInTheDocument()
+  })
 })
