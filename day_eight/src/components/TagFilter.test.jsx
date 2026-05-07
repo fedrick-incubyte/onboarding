@@ -19,4 +19,12 @@ describe('TagFilter', () => {
     expect(screen.getByText('js')).toBeInTheDocument()
     expect(screen.getByText('css')).toBeInTheDocument()
   })
+
+  it('should call onTagSelect with the tag when a tag badge is clicked', async () => {
+    const onTagSelect = vi.fn()
+    const entries = [{ tags: ['react'] }]
+    render(<TagFilter entries={entries} onTagSelect={onTagSelect} />)
+    await userEvent.click(screen.getByText('react'))
+    expect(onTagSelect).toHaveBeenCalledWith('react')
+  })
 })
