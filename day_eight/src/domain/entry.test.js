@@ -29,4 +29,10 @@ describe('createEntry', () => {
   it('should throw when body is empty', () => {
     expect(() => createEntry('Some title', '', [])).toThrow('Body is required')
   })
+
+  it('should trim whitespace from title and body', () => {
+    const entry = createEntry('  My title  ', '  My body  ', [])
+    expect(entry.title).toBe('My title')
+    expect(entry.body).toBe('My body')
+  })
 })
