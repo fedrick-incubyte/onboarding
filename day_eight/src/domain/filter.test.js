@@ -11,4 +11,10 @@ describe('filterEntries', () => {
   it('should return all entries when tag is null', () => {
     expect(filterEntries(entries, null)).toHaveLength(3)
   })
+
+  it('should return only entries that contain the tag', () => {
+    const result = filterEntries(entries, 'react')
+    expect(result).toHaveLength(2)
+    expect(result.map(e => e.id)).toEqual(['1', '3'])
+  })
 })
