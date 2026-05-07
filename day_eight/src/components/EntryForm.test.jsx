@@ -8,4 +8,9 @@ describe('EntryForm', () => {
     render(<EntryForm onSubmit={() => {}} />)
     expect(screen.getByPlaceholderText('Title')).toBeInTheDocument()
   })
+
+  it('should render a submit button', () => {
+    render(<EntryForm onSubmit={() => {}} />)
+    expect(screen.getByRole('button', { name: /add/i })).toBeInTheDocument()
+  })
 })
