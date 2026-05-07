@@ -1,0 +1,3 @@
+export function EntryForm() {
+  return <input placeholder="Title" />
+}
