@@ -6,5 +6,5 @@ function validateEntry(title, body) {
 
 export function createEntry(title, body, tags) {
   validateEntry(title, body)
-  return { id: crypto.randomUUID(), title, body, tags, createdAt: new Date().toISOString() }
+  return { id: crypto.randomUUID(), title: title.trim(), body: body.trim(), tags, createdAt: new Date().toISOString() }
 }
