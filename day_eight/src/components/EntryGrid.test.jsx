@@ -13,4 +13,9 @@ describe('EntryGrid', () => {
     expect(screen.getByText('Entry One')).toBeInTheDocument()
     expect(screen.getByText('Entry Two')).toBeInTheDocument()
   })
+
+  it('should show an empty state message when there are no entries', () => {
+    render(<EntryGrid entries={[]} />)
+    expect(screen.getByText('No entries yet.')).toBeInTheDocument()
+  })
 })
