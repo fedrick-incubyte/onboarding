@@ -8,4 +8,11 @@ describe('Badge', () => {
     render(<Badge label="react" />)
     expect(screen.getByText('react')).toBeInTheDocument()
   })
+
+  it('should call onClick when clickable and clicked', async () => {
+    const onClick = vi.fn()
+    render(<Badge label="react" clickable onClick={onClick} />)
+    await userEvent.click(screen.getByText('react'))
+    expect(onClick).toHaveBeenCalledOnce()
+  })
 })
