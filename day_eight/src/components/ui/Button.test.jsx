@@ -27,4 +27,9 @@ describe('Button', () => {
     render(<Button>Click me</Button>)
     expect(screen.getByRole('button')).toHaveClass('bg-brand-500')
   })
+
+  it('should apply secondary styles when variant is secondary', () => {
+    render(<Button variant="secondary">Click me</Button>)
+    expect(screen.getByRole('button')).toHaveClass('border-brand-500')
+  })
 })
