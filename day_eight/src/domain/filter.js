@@ -1,3 +1,4 @@
 export function filterEntries(entries, tag) {
-  return entries
+  if (!tag) return entries
+  return entries.filter(e => e.tags.includes(tag))
 }
