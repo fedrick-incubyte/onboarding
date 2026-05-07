@@ -8,4 +8,9 @@ describe('Input', () => {
     render(<Input />)
     expect(screen.getByRole('textbox')).toBeInTheDocument()
   })
+
+  it('should render a textarea when type is textarea', () => {
+    render(<Input type="textarea" />)
+    expect(screen.getByRole('textbox').tagName).toBe('TEXTAREA')
+  })
 })
