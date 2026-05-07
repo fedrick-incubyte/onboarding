@@ -13,4 +13,11 @@ describe('Input', () => {
     render(<Input type="textarea" />)
     expect(screen.getByRole('textbox').tagName).toBe('TEXTAREA')
   })
+
+  it('should call onChange with the new value', async () => {
+    const onChange = vi.fn()
+    render(<Input onChange={onChange} />)
+    await userEvent.type(screen.getByRole('textbox'), 'hello')
+    expect(onChange).toHaveBeenLastCalledWith('hello')
+  })
 })
