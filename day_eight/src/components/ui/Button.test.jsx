@@ -22,4 +22,9 @@ describe('Button', () => {
     await userEvent.click(screen.getByText('Click me'))
     expect(onClick).not.toHaveBeenCalled()
   })
+
+  it('should apply primary styles by default', () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByRole('button')).toHaveClass('bg-brand-500')
+  })
 })
