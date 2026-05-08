@@ -1,10 +1,26 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, unmountComponentAtNode } from '@testing-library/react'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App.jsx'
 
+const localStorageMock = (() => {
+  let store = {}
+  return {
+    getItem: (key) => store[key] ?? null,
+    setItem: (key, value) => { store[key] = String(value) },
+    clear: () => { store = {} },
+    removeItem: (key) => { delete store[key] },
+  }
+})()
+
 beforeEach(() => {
-  localStorage.clear()
+  vi.stubGlobal('localStorage', localStorageMock)
+  localStorageMock.clear()
+  document.documentElement.classList.remove('dark')
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
 })
 
 describe('App', () => {
@@ -25,7 +41,7 @@ describe('App', () => {
     await userEvent.type(screen.getByPlaceholderText('Title'), 'Other entry')
     await userEvent.type(screen.getByPlaceholderText('Body'), 'body')
     await userEvent.click(screen.getByText('Add'))
-    await userEvent.click(screen.getByText('react'))
+    await userEvent.click(screen.getAllByText('react')[0])
     expect(screen.getByText('React entry')).toBeInTheDocument()
     expect(screen.queryByText('Other entry')).not.toBeInTheDocument()
   })
@@ -38,5 +54,16 @@ describe('App', () => {
     unmount()
     render(<App />)
     expect(screen.getByText('Persisted entry')).toBeInTheDocument()
+  })
+
+  it('should render the app title', () => {
+    render(<App />)
+    expect(screen.getByText('Craftlog')).toBeInTheDocument()
+  })
+
+  it('should toggle dark mode on documentElement when dark mode toggle is clicked', async () => {
+    render(<App />)
+    await userEvent.click(screen.getByRole('switch'))
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
   })
 })

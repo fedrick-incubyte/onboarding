@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { createEntry } from '../domain/entry.js'
 import { parseTag } from '../domain/tag.js'
+import { Input } from './ui/Input.jsx'
+import { Button } from './ui/Button.jsx'
 
 export function EntryForm({ onSubmit }) {
   const [title, setTitle] = useState('')
@@ -16,11 +18,12 @@ export function EntryForm({ onSubmit }) {
   }
 
   return (
-    <>
-      <input placeholder="Title" value={title} onChange={e => setTitle(e.target.value)} />
-      <input placeholder="Body" value={body} onChange={e => setBody(e.target.value)} />
-      <input placeholder="Tags" value={tagsInput} onChange={e => setTagsInput(e.target.value)} />
-      <button onClick={handleSubmit}>Add</button>
-    </>
+    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm space-y-4">
+      <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300">New Entry</h2>
+      <Input placeholder="Title" value={title} onChange={setTitle} />
+      <Input placeholder="Body" value={body} onChange={setBody} />
+      <Input placeholder="Tags" value={tagsInput} onChange={setTagsInput} />
+      <Button onClick={handleSubmit}>Add</Button>
+    </div>
   )
 }
