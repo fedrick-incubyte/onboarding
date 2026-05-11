@@ -16,8 +16,10 @@ def create_app(config_name: str = "default") -> Flask:
     from app.routes.users import users_bp
     from app.routes.tags import tags_bp
     from app.routes.projects import projects_bp
+    from app.routes.tasks import tasks_bp
     flask_app.register_blueprint(auth_bp)
     flask_app.register_blueprint(users_bp)
     flask_app.register_blueprint(tags_bp)
     flask_app.register_blueprint(projects_bp)
+    flask_app.register_blueprint(tasks_bp)
     return flask_app
