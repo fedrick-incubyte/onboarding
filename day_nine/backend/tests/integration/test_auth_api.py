@@ -53,3 +53,8 @@ def should_return_401_for_expired_token(client, app):
 def should_return_401_for_invalid_token(client):
     response = client.get("/me", headers={"Authorization": "Bearer garbage.token.value"})
     assert response.status_code == 401
+
+
+def should_return_401_when_bearer_prefix_is_missing(client):
+    response = client.get("/me", headers={"Authorization": "some-token-without-bearer-prefix"})
+    assert response.status_code == 401
