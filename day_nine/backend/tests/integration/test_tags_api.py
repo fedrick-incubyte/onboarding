@@ -24,3 +24,11 @@ def should_return_200_with_tag_list(client):
     response = client.get("/tags/", headers=headers)
     assert response.status_code == 200
     assert len(response.get_json()) == 1
+
+
+def should_return_204_when_deleting_tag(client):
+    token = _register_and_login(client)
+    headers = {"Authorization": f"Bearer {token}"}
+    tag_id = client.post("/tags/", json={"name": "urgent", "color": "#FF0000"}, headers=headers).get_json()["id"]
+    response = client.delete(f"/tags/{tag_id}", headers=headers)
+    assert response.status_code == 204
