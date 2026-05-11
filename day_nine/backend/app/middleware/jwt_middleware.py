@@ -13,7 +13,7 @@ def jwt_required(route_function):
         auth_header = request.headers.get("Authorization")
         if not auth_header:
             return jsonify({"error": ErrorMessages.AUTHORIZATION_HEADER_MISSING}), HttpStatus.UNAUTHORIZED
-        from app.exceptions import TokenExpiredError
+        from app.exceptions import TokenExpiredError, InvalidTokenError
         from app.services.auth_service import decode_access_token
         from app.services.user_service import find_user_by_id
         from app.database import db
@@ -22,6 +22,8 @@ def jwt_required(route_function):
             payload = decode_access_token(token)
         except TokenExpiredError:
             return jsonify({"error": ErrorMessages.TOKEN_EXPIRED}), HttpStatus.UNAUTHORIZED
+        except InvalidTokenError:
+            return jsonify({"error": ErrorMessages.INVALID_TOKEN}), HttpStatus.UNAUTHORIZED
         g.current_user = find_user_by_id(int(payload["sub"]), db.session)
         return route_function(*args, **kwargs)
 
