@@ -1,3 +1,5 @@
+"""Application-wide constants: JWT settings, error messages, HTTP status codes."""
+
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 BCRYPT_ROUNDS = 12

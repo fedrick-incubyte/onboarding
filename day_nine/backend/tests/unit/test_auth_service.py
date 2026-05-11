@@ -3,7 +3,7 @@ import jwt as pyjwt
 from datetime import datetime, timezone, timedelta
 
 from app.constants import JWT_ALGORITHM
-from app.exceptions import TokenExpiredError
+from app.exceptions import TokenExpiredError, InvalidTokenError
 from app.services.auth_service import (
     hash_password,
     verify_password,
@@ -42,3 +42,8 @@ def should_raise_token_expired_error_for_expired_token(app):
     )
     with pytest.raises(TokenExpiredError):
         decode_access_token(expired)
+
+
+def should_raise_invalid_token_error_for_tampered_token(app):
+    with pytest.raises(InvalidTokenError):
+        decode_access_token("garbage.token.value")
