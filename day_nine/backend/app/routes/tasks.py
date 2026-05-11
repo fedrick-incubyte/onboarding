@@ -41,6 +41,22 @@ def get_task(task_id: int):
     return jsonify(_task_dict(task)), 200
 
 
+@tasks_bp.put("/tasks/<int:task_id>")
+@jwt_required
+def update_task(task_id: int):
+    """Update a task owned by the current user."""
+    task = _get_owned_task(task_id)
+    if task is None:
+        return jsonify({"error": "Not found"}), 404
+    data = request.get_json()
+    if "title" in data:
+        task.title = data["title"]
+    if "status" in data:
+        task.status = data["status"]
+    db.session.commit()
+    return jsonify(_task_dict(task)), 200
+
+
 @tasks_bp.get("/tasks/")
 @jwt_required
 def list_tasks():

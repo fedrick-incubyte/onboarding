@@ -37,3 +37,12 @@ def should_return_200_when_getting_own_task(client, register_and_login):
     response = client.get(f"/tasks/{task_id}", headers=headers)
     assert response.status_code == 200
     assert response.get_json()["title"] == "Read book"
+
+
+def should_return_200_when_updating_task_title(client, register_and_login):
+    token = register_and_login()
+    headers = {"Authorization": f"Bearer {token}"}
+    task_id = client.post("/tasks/", json={"title": "Old Title"}, headers=headers).get_json()["id"]
+    response = client.put(f"/tasks/{task_id}", json={"title": "New Title"}, headers=headers)
+    assert response.status_code == 200
+    assert response.get_json()["title"] == "New Title"
