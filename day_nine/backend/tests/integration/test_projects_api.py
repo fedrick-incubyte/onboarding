@@ -11,3 +11,12 @@ def should_return_201_when_creating_project_with_auth(client, register_and_login
     response = client.post("/projects/", json={"name": "Work"}, headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 201
     assert response.get_json()["name"] == "Work"
+
+
+def should_only_return_projects_belonging_to_current_user(client, register_and_login):
+    token_a = register_and_login("a@example.com")
+    token_b = register_and_login("b@example.com")
+    client.post("/projects/", json={"name": "A's project"}, headers={"Authorization": f"Bearer {token_a}"})
+    client.post("/projects/", json={"name": "B's project"}, headers={"Authorization": f"Bearer {token_b}"})
+    data = client.get("/projects/", headers={"Authorization": f"Bearer {token_a}"}).get_json()
+    assert len(data) == 1 and data[0]["name"] == "A's project"
