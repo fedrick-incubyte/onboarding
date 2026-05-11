@@ -45,3 +45,11 @@ def should_return_200_when_updating_project_name(client, register_and_login):
     response = client.put(f"/projects/{pid}", json={"name": "New Name"}, headers=headers)
     assert response.status_code == 200
     assert response.get_json()["name"] == "New Name"
+
+
+def should_return_204_when_deleting_project(client, register_and_login):
+    token = register_and_login()
+    headers = {"Authorization": f"Bearer {token}"}
+    pid = client.post("/projects/", json={"name": "Temp"}, headers=headers).get_json()["id"]
+    response = client.delete(f"/projects/{pid}", headers=headers)
+    assert response.status_code == 204

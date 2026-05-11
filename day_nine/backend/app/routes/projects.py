@@ -50,6 +50,18 @@ def update_project(project_id: int):
     return jsonify({"id": project.id, "name": project.name}), 200
 
 
+@projects_bp.delete("/projects/<int:project_id>")
+@jwt_required
+def delete_project(project_id: int):
+    """Delete a project owned by the current user."""
+    project = _get_owned_project(project_id)
+    if project is None:
+        return jsonify({"error": "Not found"}), 404
+    db.session.delete(project)
+    db.session.commit()
+    return "", 204
+
+
 @projects_bp.post("/projects/")
 @jwt_required
 def create_project():
