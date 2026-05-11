@@ -36,3 +36,12 @@ def should_return_200_when_accessing_own_project(client, register_and_login):
     response = client.get(f"/projects/{pid}", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     assert response.get_json()["name"] == "Mine"
+
+
+def should_return_200_when_updating_project_name(client, register_and_login):
+    token = register_and_login()
+    headers = {"Authorization": f"Bearer {token}"}
+    pid = client.post("/projects/", json={"name": "Old Name"}, headers=headers).get_json()["id"]
+    response = client.put(f"/projects/{pid}", json={"name": "New Name"}, headers=headers)
+    assert response.status_code == 200
+    assert response.get_json()["name"] == "New Name"

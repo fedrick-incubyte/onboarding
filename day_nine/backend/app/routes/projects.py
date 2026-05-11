@@ -19,15 +19,34 @@ def list_projects():
     return jsonify([{"id": p.id, "name": p.name} for p in projects]), 200
 
 
+def _get_owned_project(project_id: int):
+    """Return the project if owned by the current user, else None."""
+    return db.session.execute(
+        select(Project).where(Project.id == project_id, Project.user_id == g.current_user.id)
+    ).scalar_one_or_none()
+
+
 @projects_bp.get("/projects/<int:project_id>")
 @jwt_required
 def get_project(project_id: int):
     """Return a single project owned by the current user or 404."""
-    project = db.session.execute(
-        select(Project).where(Project.id == project_id, Project.user_id == g.current_user.id)
-    ).scalar_one_or_none()
+    project = _get_owned_project(project_id)
     if project is None:
         return jsonify({"error": "Not found"}), 404
+    return jsonify({"id": project.id, "name": project.name}), 200
+
+
+@projects_bp.put("/projects/<int:project_id>")
+@jwt_required
+def update_project(project_id: int):
+    """Update a project owned by the current user."""
+    project = _get_owned_project(project_id)
+    if project is None:
+        return jsonify({"error": "Not found"}), 404
+    data = request.get_json()
+    if "name" in data:
+        project.name = data["name"]
+    db.session.commit()
     return jsonify({"id": project.id, "name": project.name}), 200
 
 
