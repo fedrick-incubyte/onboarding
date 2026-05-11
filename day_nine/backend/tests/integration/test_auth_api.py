@@ -27,3 +27,11 @@ def should_return_access_token_on_valid_login(client):
 
 def should_return_401_when_no_auth_header(client):
     assert client.get("/me").status_code == 401
+
+
+def should_return_user_profile_with_valid_token(client):
+    client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
+    token = client.post("/login", json={"email": "user@example.com", "password": "securepass123"}).get_json()["access_token"]
+    response = client.get("/me", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    assert response.get_json()["email"] == "user@example.com"
