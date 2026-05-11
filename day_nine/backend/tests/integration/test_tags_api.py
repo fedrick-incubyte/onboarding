@@ -15,3 +15,12 @@ def should_return_201_when_creating_tag_with_auth(client):
     token = _register_and_login(client)
     response = client.post("/tags/", json={"name": "urgent", "color": "#FF0000"}, headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 201
+
+
+def should_return_200_with_tag_list(client):
+    token = _register_and_login(client)
+    headers = {"Authorization": f"Bearer {token}"}
+    client.post("/tags/", json={"name": "urgent", "color": "#FF0000"}, headers=headers)
+    response = client.get("/tags/", headers=headers)
+    assert response.status_code == 200
+    assert len(response.get_json()) == 1

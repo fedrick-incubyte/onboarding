@@ -8,6 +8,14 @@ from app.models.tag import Tag
 tags_bp = Blueprint("tags", __name__)
 
 
+@tags_bp.get("/tags/")
+@jwt_required
+def list_tags():
+    """List all tags. Requires authentication."""
+    tags = db.session.execute(db.select(Tag)).scalars().all()
+    return jsonify([{"id": t.id, "name": t.name, "color": t.color} for t in tags]), 200
+
+
 @tags_bp.post("/tags/")
 @jwt_required
 def create_tag():
