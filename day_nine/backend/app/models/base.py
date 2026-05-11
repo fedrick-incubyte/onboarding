@@ -1,3 +1,4 @@
+"""Shared model mixins."""
 from datetime import datetime, timezone
 
 from sqlalchemy import DateTime
