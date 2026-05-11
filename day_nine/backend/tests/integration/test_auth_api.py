@@ -60,6 +60,11 @@ def should_return_401_when_bearer_prefix_is_missing(client):
     assert response.status_code == 401
 
 
+def should_return_401_for_nonexistent_email_on_login(client):
+    response = client.post("/login", json={"email": "nobody@example.com", "password": "anypassword"})
+    assert response.status_code == 401
+
+
 def should_return_401_for_wrong_password_on_login(client):
     client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
     response = client.post("/login", json={"email": "user@example.com", "password": "wrongpassword"})
