@@ -43,3 +43,10 @@ def should_not_be_overdue_when_in_progress_and_due_today():
     task.status = TaskStatus.IN_PROGRESS.value
     task.due_date = date.today()
     assert task.is_overdue is False
+
+
+def should_be_overdue_when_in_progress_and_due_date_is_past():
+    task = Task()
+    task.status = TaskStatus.IN_PROGRESS.value
+    task.due_date = date.today() - timedelta(days=1)
+    assert task.is_overdue is True
