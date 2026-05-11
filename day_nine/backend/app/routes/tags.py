@@ -1,10 +1,12 @@
 """Tags blueprint: CRUD for /tags/."""
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
+from flask_pydantic import validate
 from sqlalchemy.exc import IntegrityError
 
 from app.database import db
 from app.middleware.jwt_middleware import jwt_required
 from app.models.tag import Tag
+from app.schemas.tag import TagCreate
 
 tags_bp = Blueprint("tags", __name__)
 
@@ -24,10 +26,10 @@ def list_tags():
 
 @tags_bp.post("/tags/")
 @jwt_required
-def create_tag():
+@validate()
+def create_tag(body: TagCreate):
     """Create a new tag. Requires authentication."""
-    data = request.get_json()
-    tag = Tag(name=data["name"], color=data["color"])
+    tag = Tag(name=body.name, color=body.color)
     db.session.add(tag)
     try:
         db.session.commit()

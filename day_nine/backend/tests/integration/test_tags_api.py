@@ -40,3 +40,10 @@ def should_return_409_for_duplicate_tag_name(client):
     client.post("/tags/", json={"name": "urgent", "color": "#FF0000"}, headers=headers)
     response = client.post("/tags/", json={"name": "urgent", "color": "#00FF00"}, headers=headers)
     assert response.status_code == 409
+
+
+def should_return_422_for_invalid_hex_color(client):
+    token = _register_and_login(client)
+    headers = {"Authorization": f"Bearer {token}"}
+    response = client.post("/tags/", json={"name": "urgent", "color": "not-a-color"}, headers=headers)
+    assert response.status_code == 422
