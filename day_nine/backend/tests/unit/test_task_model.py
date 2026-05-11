@@ -15,3 +15,10 @@ def should_be_overdue_when_due_date_is_past_and_not_done():
     task.status = TaskStatus.TODO.value
     task.due_date = date.today() - timedelta(days=1)
     assert task.is_overdue is True
+
+
+def should_not_be_overdue_when_status_is_done():
+    task = Task()
+    task.status = TaskStatus.DONE.value
+    task.due_date = date.today() - timedelta(days=5)
+    assert task.is_overdue is False
