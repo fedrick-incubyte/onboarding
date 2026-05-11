@@ -32,3 +32,11 @@ def should_return_204_when_deleting_tag(client):
     tag_id = client.post("/tags/", json={"name": "urgent", "color": "#FF0000"}, headers=headers).get_json()["id"]
     response = client.delete(f"/tags/{tag_id}", headers=headers)
     assert response.status_code == 204
+
+
+def should_return_409_for_duplicate_tag_name(client):
+    token = _register_and_login(client)
+    headers = {"Authorization": f"Bearer {token}"}
+    client.post("/tags/", json={"name": "urgent", "color": "#FF0000"}, headers=headers)
+    response = client.post("/tags/", json={"name": "urgent", "color": "#00FF00"}, headers=headers)
+    assert response.status_code == 409

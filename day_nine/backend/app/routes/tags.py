@@ -1,5 +1,6 @@
 """Tags blueprint: CRUD for /tags/."""
 from flask import Blueprint, jsonify, request
+from sqlalchemy.exc import IntegrityError
 
 from app.database import db
 from app.middleware.jwt_middleware import jwt_required
@@ -28,7 +29,11 @@ def create_tag():
     data = request.get_json()
     tag = Tag(name=data["name"], color=data["color"])
     db.session.add(tag)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Tag name already exists"}), 409
     return jsonify(_tag_dict(tag)), 201
 
 
