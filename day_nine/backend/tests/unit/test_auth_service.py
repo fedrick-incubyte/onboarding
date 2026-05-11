@@ -8,3 +8,9 @@ def should_verify_correct_password():
     from app.services.auth_service import hash_password, verify_password
     hashed = hash_password("mysecretpass")
     assert verify_password("mysecretpass", hashed) is True
+
+
+def should_reject_wrong_password():
+    from app.services.auth_service import hash_password, verify_password
+    hashed = hash_password("mysecretpass")
+    assert verify_password("wrongpass", hashed) is False
