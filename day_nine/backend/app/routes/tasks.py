@@ -23,6 +23,16 @@ def _task_dict(task: Task) -> dict:
     }
 
 
+@tasks_bp.get("/tasks/")
+@jwt_required
+def list_tasks():
+    """List tasks owned by the current user."""
+    tasks = db.session.execute(
+        select(Task).where(Task.user_id == g.current_user.id)
+    ).scalars().all()
+    return jsonify([_task_dict(t) for t in tasks]), 200
+
+
 @tasks_bp.post("/tasks/")
 @jwt_required
 def create_task():
