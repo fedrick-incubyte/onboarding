@@ -20,3 +20,11 @@ def should_only_return_tasks_belonging_to_current_user(client, register_and_logi
     client.post("/tasks/", json={"title": "Task B"}, headers={"Authorization": f"Bearer {token_b}"})
     tasks = client.get("/tasks/", headers={"Authorization": f"Bearer {token_a}"}).get_json()
     assert len(tasks) == 1 and tasks[0]["title"] == "Task A"
+
+
+def should_return_404_when_creating_task_in_another_users_project(client, register_and_login):
+    token_a = register_and_login("a@example.com")
+    token_b = register_and_login("b@example.com")
+    pid = client.post("/projects/", json={"name": "A's project"}, headers={"Authorization": f"Bearer {token_a}"}).get_json()["id"]
+    response = client.post("/tasks/", json={"title": "Hijack", "project_id": pid}, headers={"Authorization": f"Bearer {token_b}"})
+    assert response.status_code == 404

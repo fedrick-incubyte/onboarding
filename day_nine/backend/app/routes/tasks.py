@@ -5,6 +5,7 @@ from sqlalchemy import select
 from app.database import db
 from app.enums import TaskPriority, TaskStatus
 from app.middleware.jwt_middleware import jwt_required
+from app.models.project import Project
 from app.models.task import Task
 
 tasks_bp = Blueprint("tasks", __name__)
@@ -38,11 +39,19 @@ def list_tasks():
 def create_task():
     """Create a task owned by the current user."""
     data = request.get_json()
+    project_id = data.get("project_id")
+    if project_id is not None:
+        project = db.session.execute(
+            select(Project).where(Project.id == project_id, Project.user_id == g.current_user.id)
+        ).scalar_one_or_none()
+        if project is None:
+            return jsonify({"error": "Not found"}), 404
     task = Task(
         title=data["title"],
         user_id=g.current_user.id,
         status=data.get("status", TaskStatus.TODO.value),
         priority=data.get("priority", TaskPriority.MEDIUM.value),
+        project_id=project_id,
     )
     db.session.add(task)
     db.session.commit()
