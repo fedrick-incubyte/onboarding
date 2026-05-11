@@ -13,5 +13,7 @@ def create_app(config_name: str = "default") -> Flask:
     db.init_app(flask_app)
     CORS(flask_app, origins=[flask_app.config["FRONTEND_URL"]])
     from app.routes.auth import auth_bp
+    from app.routes.users import users_bp
     flask_app.register_blueprint(auth_bp)
+    flask_app.register_blueprint(users_bp)
     return flask_app

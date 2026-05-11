@@ -23,3 +23,7 @@ def should_return_access_token_on_valid_login(client):
     )
     assert response.status_code == 200
     assert "access_token" in response.get_json()
+
+
+def should_return_401_when_no_auth_header(client):
+    assert client.get("/me").status_code == 401
