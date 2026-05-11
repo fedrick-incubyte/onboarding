@@ -28,3 +28,12 @@ def should_return_404_when_creating_task_in_another_users_project(client, regist
     pid = client.post("/projects/", json={"name": "A's project"}, headers={"Authorization": f"Bearer {token_a}"}).get_json()["id"]
     response = client.post("/tasks/", json={"title": "Hijack", "project_id": pid}, headers={"Authorization": f"Bearer {token_b}"})
     assert response.status_code == 404
+
+
+def should_return_200_when_getting_own_task(client, register_and_login):
+    token = register_and_login()
+    headers = {"Authorization": f"Bearer {token}"}
+    task_id = client.post("/tasks/", json={"title": "Read book"}, headers=headers).get_json()["id"]
+    response = client.get(f"/tasks/{task_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.get_json()["title"] == "Read book"

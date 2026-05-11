@@ -24,6 +24,23 @@ def _task_dict(task: Task) -> dict:
     }
 
 
+def _get_owned_task(task_id: int):
+    """Return the task if owned by the current user, else None."""
+    return db.session.execute(
+        select(Task).where(Task.id == task_id, Task.user_id == g.current_user.id)
+    ).scalar_one_or_none()
+
+
+@tasks_bp.get("/tasks/<int:task_id>")
+@jwt_required
+def get_task(task_id: int):
+    """Return a single task owned by the current user or 404."""
+    task = _get_owned_task(task_id)
+    if task is None:
+        return jsonify({"error": "Not found"}), 404
+    return jsonify(_task_dict(task)), 200
+
+
 @tasks_bp.get("/tasks/")
 @jwt_required
 def list_tasks():
