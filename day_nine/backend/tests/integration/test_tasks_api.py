@@ -54,3 +54,11 @@ def should_return_204_when_deleting_own_task(client, register_and_login):
     task_id = client.post("/tasks/", json={"title": "Temp"}, headers=headers).get_json()["id"]
     response = client.delete(f"/tasks/{task_id}", headers=headers)
     assert response.status_code == 204
+
+
+def should_return_404_after_task_is_deleted(client, register_and_login):
+    token = register_and_login()
+    headers = {"Authorization": f"Bearer {token}"}
+    task_id = client.post("/tasks/", json={"title": "Gone"}, headers=headers).get_json()["id"]
+    client.delete(f"/tasks/{task_id}", headers=headers)
+    assert client.get(f"/tasks/{task_id}", headers=headers).status_code == 404
