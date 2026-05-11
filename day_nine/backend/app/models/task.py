@@ -1,7 +1,7 @@
 """Task ORM model."""
 from datetime import date
 
-from sqlalchemy import Date, Enum, ForeignKey, String, Text
+from sqlalchemy import Date, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import db
@@ -17,8 +17,8 @@ class Task(TimestampMixin, db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=True)
-    status: Mapped[str] = mapped_column(Enum(TaskStatus, values_callable=lambda e: [i.value for i in e]), nullable=False, default=TaskStatus.TODO.value)
-    priority: Mapped[str] = mapped_column(Enum(TaskPriority, values_callable=lambda e: [i.value for i in e]), nullable=False, default=TaskPriority.MEDIUM.value)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default=TaskStatus.TODO.value)
+    priority: Mapped[str] = mapped_column(String(20), nullable=False, default=TaskPriority.MEDIUM.value)
     due_date: Mapped[object] = mapped_column(Date, nullable=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), nullable=True)
 
