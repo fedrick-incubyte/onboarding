@@ -28,3 +28,11 @@ def should_return_404_when_accessing_another_users_project(client, register_and_
     pid = client.post("/projects/", json={"name": "Private"}, headers={"Authorization": f"Bearer {token_a}"}).get_json()["id"]
     response = client.get(f"/projects/{pid}", headers={"Authorization": f"Bearer {token_b}"})
     assert response.status_code == 404
+
+
+def should_return_200_when_accessing_own_project(client, register_and_login):
+    token = register_and_login()
+    pid = client.post("/projects/", json={"name": "Mine"}, headers={"Authorization": f"Bearer {token}"}).get_json()["id"]
+    response = client.get(f"/projects/{pid}", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    assert response.get_json()["name"] == "Mine"
