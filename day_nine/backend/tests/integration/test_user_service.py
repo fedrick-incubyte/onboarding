@@ -27,3 +27,11 @@ def should_login_and_return_token(app):
         db.session.commit()
         token = login_user("a@b.com", "pass12345", db.session)
         assert isinstance(token, str) and len(token) > 10
+
+
+def should_raise_invalid_credentials_for_wrong_password(app):
+    with app.app_context():
+        register_user("a@b.com", "pass12345", db.session)
+        db.session.commit()
+        with pytest.raises(InvalidCredentialsError):
+            login_user("a@b.com", "wrongpass", db.session)
