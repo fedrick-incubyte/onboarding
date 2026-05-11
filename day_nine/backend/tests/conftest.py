@@ -40,6 +40,15 @@ def client(app):
     return app.test_client()
 
 
+@pytest.fixture
+def register_and_login(client):
+    """Return a helper that registers a user and returns their JWT."""
+    def _helper(email="user@example.com", password="securepass123"):
+        client.post("/register", json={"email": email, "password": password})
+        return client.post("/login", json={"email": email, "password": password}).get_json()["access_token"]
+    return _helper
+
+
 @pytest.fixture(autouse=True)
 def clean_tables(app):
     """Delete all rows after each test without dropping the schema."""
