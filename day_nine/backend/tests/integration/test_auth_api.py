@@ -14,3 +14,12 @@ def should_return_400_on_duplicate_email(client):
         "/register", json={"email": "user@example.com", "password": "securepass123"}
     )
     assert response.status_code == 400
+
+
+def should_return_access_token_on_valid_login(client):
+    client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
+    response = client.post(
+        "/login", json={"email": "user@example.com", "password": "securepass123"}
+    )
+    assert response.status_code == 200
+    assert "access_token" in response.get_json()

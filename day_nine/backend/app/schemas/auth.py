@@ -7,3 +7,10 @@ class RegisterRequest(BaseModel):
 
     email: EmailStr
     password: str
+
+
+class LoginRequest(BaseModel):
+    """Payload for POST /login."""
+
+    email: EmailStr
+    password: str
