@@ -29,3 +29,10 @@ def should_not_be_overdue_when_no_due_date():
     task.status = TaskStatus.TODO.value
     task.due_date = None
     assert task.is_overdue is False
+
+
+def should_not_be_overdue_when_due_date_is_today():
+    task = Task()
+    task.status = TaskStatus.TODO.value
+    task.due_date = date.today()
+    assert task.is_overdue is False
