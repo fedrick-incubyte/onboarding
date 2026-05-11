@@ -1,4 +1,6 @@
 """Task ORM model."""
+from datetime import date
+
 from sqlalchemy import Date, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -19,3 +21,12 @@ class Task(TimestampMixin, db.Model):
     priority: Mapped[str] = mapped_column(Enum(TaskPriority, values_callable=lambda e: [i.value for i in e]), nullable=False, default=TaskPriority.MEDIUM.value)
     due_date: Mapped[object] = mapped_column(Date, nullable=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), nullable=True)
+
+    @property
+    def is_overdue(self) -> bool:
+        """Return True when the task has a past due date and is not done."""
+        if self.due_date is None:
+            return False
+        if self.status == TaskStatus.DONE.value:
+            return False
+        return self.due_date < date.today()
