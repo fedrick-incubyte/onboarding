@@ -69,3 +69,13 @@ def should_return_401_for_wrong_password_on_login(client):
     client.post("/register", json={"email": "user@example.com", "password": "securepass123"})
     response = client.post("/login", json={"email": "user@example.com", "password": "wrongpassword"})
     assert response.status_code == 401
+
+
+def should_return_422_when_register_missing_email(client):
+    response = client.post("/register", json={"password": "securepass123"})
+    assert response.status_code == 422
+
+
+def should_return_422_when_register_missing_password(client):
+    response = client.post("/register", json={"email": "user@example.com"})
+    assert response.status_code == 422
