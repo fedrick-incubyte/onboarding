@@ -52,3 +52,12 @@ it('should_remove_task_after_delete', async () => {
   await userEvent.click(screen.getByRole('button', { name: /delete/i }))
   await waitFor(() => expect(screen.queryByText('Buy milk')).not.toBeInTheDocument())
 })
+
+it('should_call_logout_when_logout_button_clicked', async () => {
+  vi.spyOn(taskService, 'getTasks').mockResolvedValue([])
+  const mockLogout = vi.fn()
+  render(<DashboardPage />, { wrapper: ({ children }) => <AuthContext.Provider value={{ ...mockAuth, logout: mockLogout }}>{children}</AuthContext.Provider> })
+  await waitFor(() => expect(screen.queryByText(/loading/i)).not.toBeInTheDocument())
+  await userEvent.click(screen.getByRole('button', { name: /logout/i }))
+  expect(mockLogout).toHaveBeenCalledOnce()
+})
