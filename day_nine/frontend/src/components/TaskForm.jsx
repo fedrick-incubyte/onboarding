@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Input } from './ui/Input'
+import { Button } from './ui/Button'
 
 export function TaskForm({ onAdd }) {
   const [title, setTitle] = useState('')
@@ -11,9 +13,11 @@ export function TaskForm({ onAdd }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input placeholder="New task" value={title} onChange={e => setTitle(e.target.value)} />
-      <button type="submit">Add</button>
+    <form onSubmit={handleSubmit} className="flex gap-2">
+      <div className="flex-1">
+        <Input value={title} onChange={setTitle} placeholder="New task" />
+      </div>
+      <Button type="submit">Add</Button>
     </form>
   )
 }
