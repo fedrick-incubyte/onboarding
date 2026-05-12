@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { retrieveToken, isTokenExpired, removeToken } from '../domain/token'
-import { getMe } from '../api/authService'
+import { retrieveToken, isTokenExpired, removeToken, storeToken } from '../domain/token'
+import { getMe, login as loginService } from '../api/authService'
 
 const AuthContext = createContext(null)
 
@@ -15,7 +15,14 @@ export function AuthProvider({ children }) {
     getMe().then(setUser).finally(() => setIsLoading(false))
   }, [])
 
-  return <AuthContext.Provider value={{ user, isLoading }}>{children}</AuthContext.Provider>
+  async function login(email, password) {
+    const { access_token } = await loginService(email, password)
+    storeToken(access_token)
+    const profile = await getMe()
+    setUser(profile)
+  }
+
+  return <AuthContext.Provider value={{ user, isLoading, login }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
