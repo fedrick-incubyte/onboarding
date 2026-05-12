@@ -27,3 +27,12 @@ it('should_restore_session_from_valid_stored_token', async () => {
   render(<AuthProvider><AuthConsumer /></AuthProvider>)
   await waitFor(() => expect(screen.getByTestId('user-email')).toHaveTextContent('u@t.com'))
 })
+
+it('should_remove_expired_token_on_mount', async () => {
+  const payload = btoa(JSON.stringify({ exp: 1 }))
+  vi.spyOn(token, 'retrieveToken').mockReturnValue(`h.${payload}.s`)
+  const removeSpy = vi.spyOn(token, 'removeToken')
+  render(<AuthProvider><AuthConsumer /></AuthProvider>)
+  await waitFor(() => expect(screen.getByTestId('auth-status')).toHaveTextContent('logged-out'))
+  expect(removeSpy).toHaveBeenCalledOnce()
+})
