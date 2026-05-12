@@ -25,4 +25,9 @@ describe('Input', () => {
     render(<Input placeholder="Email" error="Required" />)
     expect(screen.getByText('Required')).toBeInTheDocument()
   })
+
+  it('should apply error border when error prop provided', () => {
+    render(<Input placeholder="Email" error="Required" />)
+    expect(screen.getByRole('textbox')).toHaveClass('border-red-500')
+  })
 })
