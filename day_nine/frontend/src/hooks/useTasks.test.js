@@ -27,3 +27,11 @@ it('should_append_task_when_addTask_called', async () => {
   result.current.addTask({ id: 99, title: 'New task' })
   await waitFor(() => expect(result.current.tasks).toHaveLength(1))
 })
+
+it('should_remove_task_from_list', async () => {
+  vi.spyOn(taskService, 'getTasks').mockResolvedValue([{ id: 1, title: 'Buy milk' }])
+  const { result } = renderHook(() => useTasks())
+  await waitFor(() => expect(result.current.tasks).toHaveLength(1))
+  result.current.removeTask(1)
+  await waitFor(() => expect(result.current.tasks).toHaveLength(0))
+})

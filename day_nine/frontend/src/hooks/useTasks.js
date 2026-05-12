@@ -11,6 +11,7 @@ export function useTasks() {
   }, [])
 
   function addTask(task) { setTasks(prev => [...prev, task]) }
+  function removeTask(id) { setTasks(prev => prev.filter(t => t.id !== id)) }
 
-  return { tasks, isLoading, error, addTask }
+  return { tasks, isLoading, error, addTask, removeTask }
 }
