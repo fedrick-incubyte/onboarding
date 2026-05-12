@@ -24,3 +24,10 @@ it('should_call_register_then_login_on_submit', async () => {
   expect(mockRegister).toHaveBeenCalledWith('u@t.com', 'pw123')
   expect(mockLogin).toHaveBeenCalledWith('u@t.com', 'pw123')
 })
+
+it('should_display_error_message_on_failed_signup', async () => {
+  vi.spyOn(authService, 'register').mockRejectedValue(new Error('Email already registered'))
+  render(<SignupPage />, { wrapper })
+  await userEvent.click(screen.getByRole('button', { name: /sign up/i }))
+  expect(await screen.findByText(/email already registered/i)).toBeInTheDocument()
+})
