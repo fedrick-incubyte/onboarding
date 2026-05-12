@@ -24,3 +24,7 @@ it('should_decode_valid_jwt_payload', () => {
   const payload = btoa(JSON.stringify({ user_id: 1, exp: 9999999999 }))
   expect(decodeTokenPayload(`header.${payload}.sig`)).toMatchObject({ user_id: 1 })
 })
+
+it('should_return_null_for_malformed_token', () => {
+  expect(decodeTokenPayload('not-a-token')).toBeNull()
+})
