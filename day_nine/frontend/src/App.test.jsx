@@ -12,6 +12,13 @@ it('should_redirect_to_login_when_unauthenticated_user_visits_dashboard', async 
   await waitFor(() => expect(screen.getByLabelText(/email/i)).toBeInTheDocument())
 })
 
+it('should_render_signup_page_at_signup_route', () => {
+  vi.spyOn(token, 'retrieveToken').mockReturnValue(null)
+  window.history.pushState({}, '', '/signup')
+  render(<App />)
+  expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument()
+})
+
 it('should_show_dashboard_when_authenticated_user_visits_root', async () => {
   const payload = btoa(JSON.stringify({ exp: 9999999999 }))
   vi.spyOn(token, 'retrieveToken').mockReturnValue(`h.${payload}.s`)
