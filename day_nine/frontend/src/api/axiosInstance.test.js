@@ -16,3 +16,10 @@ it('should_attach_bearer_token_when_token_exists', async () => {
   const r = await apiClient.get('/me')
   expect(r.config.headers['Authorization']).toBe('Bearer fake.jwt.token')
 })
+
+it('should_not_attach_header_when_no_token_exists', async () => {
+  vi.spyOn(token, 'retrieveToken').mockReturnValue(null)
+  mock.onGet('/me').reply(200, {})
+  const r = await apiClient.get('/me')
+  expect(r.config.headers['Authorization']).toBeUndefined()
+})
