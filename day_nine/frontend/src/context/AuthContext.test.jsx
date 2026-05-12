@@ -51,6 +51,11 @@ it('should_store_token_and_set_user_on_login', async () => {
   expect(storeSpy).toHaveBeenCalledWith('new.tok')
 })
 
+it('should_throw_when_useAuth_used_outside_provider', () => {
+  function Bare() { useAuth(); return null }
+  expect(() => render(<Bare />)).toThrow()
+})
+
 it('should_remove_token_and_clear_user_on_logout', async () => {
   const payload = btoa(JSON.stringify({ exp: 9999999999 }))
   vi.spyOn(token, 'retrieveToken').mockReturnValue(`h.${payload}.s`)

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { retrieveToken, isTokenExpired, removeToken, storeToken } from '../domain/token'
 import { getMe, login as loginService } from '../api/authService'
 
-const AuthContext = createContext(null)
+export const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
