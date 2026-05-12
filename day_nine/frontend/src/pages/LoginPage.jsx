@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -6,6 +7,7 @@ import { Card } from '../components/ui/Card'
 
 export default function LoginPage() {
   const { login } = useContext(AuthContext)
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
@@ -16,6 +18,7 @@ export default function LoginPage() {
     setIsSubmitting(true)
     try {
       await login(email, password)
+      navigate('/dashboard')
     } catch (err) {
       setError(err.message)
     } finally {
