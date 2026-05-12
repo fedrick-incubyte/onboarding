@@ -6,13 +6,17 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()
+    setIsSubmitting(true)
     try {
       await login(email, password)
     } catch (err) {
       setError(err.message)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -23,7 +27,7 @@ export default function LoginPage() {
       <label htmlFor="password">Password</label>
       <input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
       {error && <p>{error}</p>}
-      <button type="submit">Sign in</button>
+      <button type="submit" disabled={isSubmitting}>Sign in</button>
     </form>
   )
 }

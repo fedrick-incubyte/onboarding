@@ -28,3 +28,12 @@ it('should_display_error_message_on_failed_login', async () => {
   await userEvent.click(screen.getByRole('button', { name: /sign in/i }))
   expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument()
 })
+
+it('should_disable_submit_button_while_logging_in', async () => {
+  let resolve
+  const mockLogin = vi.fn().mockReturnValue(new Promise(r => { resolve = r }))
+  render(<LoginPage />, { wrapper: ({ children }) => <AuthContext.Provider value={{ login: mockLogin }}>{children}</AuthContext.Provider> })
+  await userEvent.click(screen.getByRole('button', { name: /sign in/i }))
+  expect(screen.getByRole('button', { name: /sign in/i })).toBeDisabled()
+  resolve()
+})
