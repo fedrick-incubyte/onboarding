@@ -38,3 +38,7 @@ it('should_return_false_when_exp_is_in_the_future', () => {
   const payload = btoa(JSON.stringify({ exp: 9999999999 }))
   expect(isTokenExpired(`header.${payload}.sig`)).toBe(false)
 })
+
+it('should_return_true_when_token_is_null', () => {
+  expect(isTokenExpired(null)).toBe(true)
+})
