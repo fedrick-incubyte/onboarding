@@ -1,12 +1,12 @@
-import { useState, useContext } from 'react'
-import { AuthContext } from '../context/AuthContext'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { register } from '../api/authService'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Card } from '../components/ui/Card'
 
 export default function SignupPage() {
-  const { login } = useContext(AuthContext)
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
@@ -17,7 +17,7 @@ export default function SignupPage() {
     setIsSubmitting(true)
     try {
       await register(email, password)
-      await login(email, password)
+      navigate('/login')
     } catch (err) {
       setError(err.message)
     } finally {

@@ -4,6 +4,12 @@ import { AuthContext } from '../context/AuthContext'
 import * as authService from '../api/authService'
 import SignupPage from './SignupPage'
 
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockNavigate,
+}))
+
 function wrapper({ children }) {
   return <AuthContext.Provider value={{ login: vi.fn() }}>{children}</AuthContext.Provider>
 }
@@ -14,15 +20,14 @@ it('should_render_email_and_password_fields', () => {
   expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
 })
 
-it('should_call_register_then_login_on_submit', async () => {
+it('should_call_register_then_redirect_to_login', async () => {
   const mockRegister = vi.spyOn(authService, 'register').mockResolvedValue({})
-  const mockLogin = vi.fn().mockResolvedValue(undefined)
-  render(<SignupPage />, { wrapper: ({ children }) => <AuthContext.Provider value={{ login: mockLogin }}>{children}</AuthContext.Provider> })
+  render(<SignupPage />, { wrapper })
   await userEvent.type(screen.getByLabelText(/email/i), 'u@t.com')
   await userEvent.type(screen.getByLabelText(/password/i), 'pw123')
   await userEvent.click(screen.getByRole('button', { name: /sign up/i }))
   expect(mockRegister).toHaveBeenCalledWith('u@t.com', 'pw123')
-  expect(mockLogin).toHaveBeenCalledWith('u@t.com', 'pw123')
+  expect(mockNavigate).toHaveBeenCalledWith('/login')
 })
 
 it('should_display_error_message_on_failed_signup', async () => {
