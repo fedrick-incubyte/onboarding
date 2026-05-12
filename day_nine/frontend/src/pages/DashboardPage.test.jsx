@@ -1,0 +1,16 @@
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { AuthContext } from '../context/AuthContext'
+import * as taskService from '../api/taskService'
+import DashboardPage from './DashboardPage'
+
+const mockAuth = { user: { email: 'u@t.com' }, logout: vi.fn() }
+function wrapper({ children }) {
+  return <AuthContext.Provider value={mockAuth}>{children}</AuthContext.Provider>
+}
+
+it('should_show_loading_state_while_fetching_tasks', () => {
+  vi.spyOn(taskService, 'getTasks').mockReturnValue(new Promise(() => {}))
+  render(<DashboardPage />, { wrapper })
+  expect(screen.getByText(/loading/i)).toBeInTheDocument()
+})
