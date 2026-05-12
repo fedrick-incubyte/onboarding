@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
     const t = retrieveToken()
     if (!t) { setIsLoading(false); return }
     if (isTokenExpired(t)) { removeToken(); setIsLoading(false); return }
-    getMe().then(setUser).finally(() => setIsLoading(false))
+    getMe().then(setUser).catch(() => removeToken()).finally(() => setIsLoading(false))
   }, [])
 
   async function login(email, password) {
