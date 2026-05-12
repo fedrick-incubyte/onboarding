@@ -9,3 +9,8 @@ export async function createTask(data) {
   const r = await apiClient.post('/tasks', data)
   return r.data
 }
+
+export async function updateTask(id, data) {
+  const r = await apiClient.put(`/tasks/${id}`, data)
+  return r.data
+}
