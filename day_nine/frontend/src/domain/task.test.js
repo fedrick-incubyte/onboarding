@@ -11,3 +11,7 @@ it('should_throw_when_title_exceeds_200_characters', () => {
 it('should_trim_whitespace_from_title', () => {
   expect(normalizeTask({ title: '  Buy milk  ' }).title).toBe('Buy milk')
 })
+
+it('should_default_status_to_todo', () => {
+  expect(normalizeTask({ title: 'x' }).status).toBe('todo')
+})
