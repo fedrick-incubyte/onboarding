@@ -22,7 +22,12 @@ export function AuthProvider({ children }) {
     setUser(profile)
   }
 
-  return <AuthContext.Provider value={{ user, isLoading, login }}>{children}</AuthContext.Provider>
+  function logout() {
+    removeToken()
+    setUser(null)
+  }
+
+  return <AuthContext.Provider value={{ user, isLoading, login, logout }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

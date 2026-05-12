@@ -50,3 +50,15 @@ it('should_store_token_and_set_user_on_login', async () => {
   await waitFor(() => expect(screen.getByTestId('user-email')).toHaveTextContent('u@t.com'))
   expect(storeSpy).toHaveBeenCalledWith('new.tok')
 })
+
+it('should_remove_token_and_clear_user_on_logout', async () => {
+  const payload = btoa(JSON.stringify({ exp: 9999999999 }))
+  vi.spyOn(token, 'retrieveToken').mockReturnValue(`h.${payload}.s`)
+  vi.spyOn(authService, 'getMe').mockResolvedValue({ user_id: 1, email: 'u@t.com' })
+  const removeSpy = vi.spyOn(token, 'removeToken')
+  render(<AuthProvider><AuthConsumer /></AuthProvider>)
+  await waitFor(() => expect(screen.getByTestId('user-email')).toHaveTextContent('u@t.com'))
+  fireEvent.click(screen.getByText('Logout'))
+  await waitFor(() => expect(screen.getByTestId('auth-status')).toHaveTextContent('logged-out'))
+  expect(removeSpy).toHaveBeenCalled()
+})
