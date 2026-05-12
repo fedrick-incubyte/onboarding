@@ -21,3 +21,10 @@ it('should_call_login_on_form_submit', async () => {
   await userEvent.click(screen.getByRole('button', { name: /sign in/i }))
   expect(mockLogin).toHaveBeenCalledWith('u@t.com', 'pw123')
 })
+
+it('should_display_error_message_on_failed_login', async () => {
+  const mockLogin = vi.fn().mockRejectedValue(new Error('Invalid credentials'))
+  render(<LoginPage />, { wrapper: ({ children }) => <AuthContext.Provider value={{ login: mockLogin }}>{children}</AuthContext.Provider> })
+  await userEvent.click(screen.getByRole('button', { name: /sign in/i }))
+  expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument()
+})
