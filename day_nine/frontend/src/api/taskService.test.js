@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter'
 import { apiClient } from './axiosInstance'
-import { getTasks, createTask, updateTask } from './taskService'
+import { getTasks, createTask, updateTask, deleteTask } from './taskService'
 
 const mock = new MockAdapter(apiClient)
 afterEach(() => mock.reset())
@@ -18,4 +18,9 @@ it('should_post_new_task_to_tasks_endpoint', async () => {
 it('should_put_to_tasks_id_endpoint', async () => {
   mock.onPut('/tasks/2').reply(200, { id: 2, title: 'Walk cat' })
   expect(await updateTask(2, { title: 'Walk cat' })).toMatchObject({ id: 2, title: 'Walk cat' })
+})
+
+it('should_send_delete_to_tasks_id_endpoint', async () => {
+  mock.onDelete('/tasks/2').reply(204)
+  await expect(deleteTask(2)).resolves.not.toThrow()
 })
