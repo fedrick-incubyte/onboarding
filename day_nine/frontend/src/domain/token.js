@@ -19,3 +19,8 @@ export function decodeTokenPayload(token) {
     return null
   }
 }
+
+export function isTokenExpired(token) {
+  const payload = decodeTokenPayload(token)
+  return payload === null || payload.exp * 1000 < Date.now()
+}

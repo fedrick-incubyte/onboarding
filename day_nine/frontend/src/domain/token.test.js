@@ -1,4 +1,4 @@
-import { storeToken, retrieveToken, removeToken, decodeTokenPayload } from './token'
+import { storeToken, retrieveToken, removeToken, decodeTokenPayload, isTokenExpired } from './token'
 
 it('should_store_token_in_localStorage', () => {
   storeToken('my.jwt.token')
@@ -27,4 +27,9 @@ it('should_decode_valid_jwt_payload', () => {
 
 it('should_return_null_for_malformed_token', () => {
   expect(decodeTokenPayload('not-a-token')).toBeNull()
+})
+
+it('should_return_true_when_exp_is_in_the_past', () => {
+  const payload = btoa(JSON.stringify({ exp: 1 }))
+  expect(isTokenExpired(`header.${payload}.sig`)).toBe(true)
 })
