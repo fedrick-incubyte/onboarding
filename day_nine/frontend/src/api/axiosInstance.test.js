@@ -23,3 +23,10 @@ it('should_not_attach_header_when_no_token_exists', async () => {
   const r = await apiClient.get('/me')
   expect(r.config.headers['Authorization']).toBeUndefined()
 })
+
+it('should_call_removeToken_when_401_received', async () => {
+  const spy = vi.spyOn(token, 'removeToken')
+  mock.onGet('/me').reply(401)
+  await apiClient.get('/me').catch(() => {})
+  expect(spy).toHaveBeenCalledOnce()
+})
