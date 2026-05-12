@@ -43,3 +43,12 @@ it('should_add_new_task_after_form_submission', async () => {
   await userEvent.click(screen.getByRole('button', { name: /add/i }))
   expect(await screen.findByText('Walk dog')).toBeInTheDocument()
 })
+
+it('should_remove_task_after_delete', async () => {
+  vi.spyOn(taskService, 'getTasks').mockResolvedValue([{ id: 1, title: 'Buy milk', status: 'todo' }])
+  vi.spyOn(taskService, 'deleteTask').mockResolvedValue(undefined)
+  render(<DashboardPage />, { wrapper })
+  await screen.findByText('Buy milk')
+  await userEvent.click(screen.getByRole('button', { name: /delete/i }))
+  await waitFor(() => expect(screen.queryByText('Buy milk')).not.toBeInTheDocument())
+})
