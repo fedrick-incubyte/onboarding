@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import * as token from '../domain/token'
+import * as authService from '../api/authService'
 import { AuthProvider, useAuth } from './AuthContext'
 
 function AuthConsumer() {
@@ -17,4 +18,12 @@ it('should_be_logged_out_when_no_token_in_localStorage', async () => {
   vi.spyOn(token, 'retrieveToken').mockReturnValue(null)
   render(<AuthProvider><AuthConsumer /></AuthProvider>)
   await waitFor(() => expect(screen.getByTestId('auth-status')).toHaveTextContent('logged-out'))
+})
+
+it('should_restore_session_from_valid_stored_token', async () => {
+  const payload = btoa(JSON.stringify({ exp: 9999999999 }))
+  vi.spyOn(token, 'retrieveToken').mockReturnValue(`h.${payload}.s`)
+  vi.spyOn(authService, 'getMe').mockResolvedValue({ user_id: 1, email: 'u@t.com' })
+  render(<AuthProvider><AuthConsumer /></AuthProvider>)
+  await waitFor(() => expect(screen.getByTestId('user-email')).toHaveTextContent('u@t.com'))
 })

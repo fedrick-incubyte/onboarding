@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { retrieveToken } from '../domain/token'
+import { retrieveToken, isTokenExpired } from '../domain/token'
+import { getMe } from '../api/authService'
 
 const AuthContext = createContext(null)
 
@@ -9,7 +10,11 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const t = retrieveToken()
-    if (!t) setIsLoading(false)
+    if (!t || isTokenExpired(t)) {
+      setIsLoading(false)
+      return
+    }
+    getMe().then(setUser).finally(() => setIsLoading(false))
   }, [])
 
   return <AuthContext.Provider value={{ user, isLoading }}>{children}</AuthContext.Provider>
