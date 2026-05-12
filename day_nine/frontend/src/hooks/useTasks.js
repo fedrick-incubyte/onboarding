@@ -10,5 +10,7 @@ export function useTasks() {
     getTasks().then(setTasks).catch(setError).finally(() => setIsLoading(false))
   }, [])
 
-  return { tasks, isLoading, error }
+  function addTask(task) { setTasks(prev => [...prev, task]) }
+
+  return { tasks, isLoading, error, addTask }
 }
