@@ -4,10 +4,10 @@ def should_return_404_for_unknown_route(client):
 
 def should_include_cors_header_for_frontend_origin(client):
     r = client.options(
-        "/public",
+        "/register",
         headers={
-            "Origin": "http://localhost:5173",
-            "Access-Control-Request-Method": "GET",
+            "Origin": "http://localhost:5174",
+            "Access-Control-Request-Method": "POST",
         },
     )
     assert "Access-Control-Allow-Origin" in r.headers

@@ -9,6 +9,7 @@ from app.database import db
 def create_app(config_name: str = "default") -> Flask:
     """Create and configure a Flask app instance for the given environment."""
     flask_app = Flask(__name__)
+    flask_app.url_map.strict_slashes = False
     flask_app.config.from_object(config_map[config_name])
     db.init_app(flask_app)
     CORS(flask_app, origins=[flask_app.config["FRONTEND_URL"]])
