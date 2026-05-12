@@ -20,3 +20,9 @@ it('should_render_task_titles_after_fetch', async () => {
   render(<DashboardPage />, { wrapper })
   expect(await screen.findByText('Buy milk')).toBeInTheDocument()
 })
+
+it('should_show_error_message_when_fetch_fails', async () => {
+  vi.spyOn(taskService, 'getTasks').mockRejectedValue(new Error('Network error'))
+  render(<DashboardPage />, { wrapper })
+  expect(await screen.findByText(/failed to load tasks/i)).toBeInTheDocument()
+})
