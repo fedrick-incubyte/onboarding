@@ -4,3 +4,8 @@ export async function getTasks() {
   const r = await apiClient.get('/tasks')
   return r.data
 }
+
+export async function createTask(data) {
+  const r = await apiClient.post('/tasks', data)
+  return r.data
+}
