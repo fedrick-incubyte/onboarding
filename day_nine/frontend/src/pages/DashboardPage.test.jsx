@@ -33,3 +33,13 @@ it('should_display_task_status_badge', async () => {
   await screen.findByText('Buy milk')
   expect(screen.getByText('done')).toHaveClass('bg-green-100')
 })
+
+it('should_add_new_task_after_form_submission', async () => {
+  vi.spyOn(taskService, 'getTasks').mockResolvedValue([])
+  vi.spyOn(taskService, 'createTask').mockResolvedValue({ id: 99, title: 'Walk dog', status: 'todo' })
+  render(<DashboardPage />, { wrapper })
+  await waitFor(() => expect(screen.queryByText(/loading/i)).not.toBeInTheDocument())
+  await userEvent.type(screen.getByPlaceholderText(/new task/i), 'Walk dog')
+  await userEvent.click(screen.getByRole('button', { name: /add/i }))
+  expect(await screen.findByText('Walk dog')).toBeInTheDocument()
+})
