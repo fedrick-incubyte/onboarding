@@ -13,3 +13,9 @@ it('should_set_tasks_after_successful_fetch', async () => {
   const { result } = renderHook(() => useTasks())
   await waitFor(() => expect(result.current.tasks).toHaveLength(1))
 })
+
+it('should_set_error_on_fetch_failure', async () => {
+  vi.spyOn(taskService, 'getTasks').mockRejectedValue(new Error('Network error'))
+  const { result } = renderHook(() => useTasks())
+  await waitFor(() => expect(result.current.error).toBeTruthy())
+})
