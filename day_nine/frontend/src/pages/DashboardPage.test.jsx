@@ -14,3 +14,9 @@ it('should_show_loading_state_while_fetching_tasks', () => {
   render(<DashboardPage />, { wrapper })
   expect(screen.getByText(/loading/i)).toBeInTheDocument()
 })
+
+it('should_render_task_titles_after_fetch', async () => {
+  vi.spyOn(taskService, 'getTasks').mockResolvedValue([{ id: 1, title: 'Buy milk', status: 'todo' }])
+  render(<DashboardPage />, { wrapper })
+  expect(await screen.findByText('Buy milk')).toBeInTheDocument()
+})
