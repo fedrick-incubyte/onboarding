@@ -11,3 +11,11 @@ export function retrieveToken() {
 export function removeToken() {
   localStorage.removeItem(TOKEN_KEY)
 }
+
+export function decodeTokenPayload(token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1]))
+  } catch {
+    return null
+  }
+}

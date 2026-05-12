@@ -1,4 +1,4 @@
-import { storeToken, retrieveToken, removeToken } from './token'
+import { storeToken, retrieveToken, removeToken, decodeTokenPayload } from './token'
 
 it('should_store_token_in_localStorage', () => {
   storeToken('my.jwt.token')
@@ -18,4 +18,9 @@ it('should_remove_token_from_localStorage', () => {
   localStorage.setItem('auth_token', 'my.jwt.token')
   removeToken()
   expect(localStorage.getItem('auth_token')).toBeNull()
+})
+
+it('should_decode_valid_jwt_payload', () => {
+  const payload = btoa(JSON.stringify({ user_id: 1, exp: 9999999999 }))
+  expect(decodeTokenPayload(`header.${payload}.sig`)).toMatchObject({ user_id: 1 })
 })
