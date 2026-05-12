@@ -20,3 +20,8 @@ it('should_render_children_when_user_is_authenticated', () => {
   renderWithAuth({ isAuthenticated: true, isLoading: false })
   expect(screen.getByText('Dashboard Content')).toBeInTheDocument()
 })
+
+it('should_redirect_to_login_when_not_authenticated', () => {
+  renderWithAuth({ isAuthenticated: false, isLoading: false })
+  expect(screen.getByText('Login Page')).toBeInTheDocument()
+})
