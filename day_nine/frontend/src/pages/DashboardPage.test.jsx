@@ -26,3 +26,10 @@ it('should_show_error_message_when_fetch_fails', async () => {
   render(<DashboardPage />, { wrapper })
   expect(await screen.findByText(/failed to load tasks/i)).toBeInTheDocument()
 })
+
+it('should_display_task_status_badge', async () => {
+  vi.spyOn(taskService, 'getTasks').mockResolvedValue([{ id: 1, title: 'Buy milk', status: 'done' }])
+  render(<DashboardPage />, { wrapper })
+  await screen.findByText('Buy milk')
+  expect(screen.getByText('done')).toHaveClass('bg-green-100')
+})
