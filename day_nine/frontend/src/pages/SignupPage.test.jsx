@@ -31,3 +31,12 @@ it('should_display_error_message_on_failed_signup', async () => {
   await userEvent.click(screen.getByRole('button', { name: /sign up/i }))
   expect(await screen.findByText(/email already registered/i)).toBeInTheDocument()
 })
+
+it('should_disable_submit_button_while_signing_up', async () => {
+  let resolve
+  vi.spyOn(authService, 'register').mockReturnValue(new Promise(r => { resolve = r }))
+  render(<SignupPage />, { wrapper })
+  await userEvent.click(screen.getByRole('button', { name: /sign up/i }))
+  expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled()
+  resolve({})
+})
