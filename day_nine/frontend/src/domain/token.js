@@ -7,3 +7,7 @@ export function storeToken(token) {
 export function retrieveToken() {
   return localStorage.getItem(TOKEN_KEY)
 }
+
+export function removeToken() {
+  localStorage.removeItem(TOKEN_KEY)
+}
